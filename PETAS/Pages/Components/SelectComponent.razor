@@ -1,0 +1,15 @@
+﻿<select class="form-control col-3" @onchange="OnChangeEvent">
+    <option value="">selection criteria...</option>
+    <option value="AllStaff">All Staff</option>
+    <option value="Department">By Department</option>
+    <option value="Grade">By Grade</option>
+    <option value="Group">By Group</option>
+    <option value="Job Title">By Job Title</option>
+    <option value="Employee ID">By Employee ID</option>
+</select>
+
+@code{
+
+    [Parameter] 
+    public EventCallback<ChangeEventArgs> OnChangeEvent{ get; set; }
+}

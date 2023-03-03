@@ -1,0 +1,161 @@
+﻿@inject ITrainingService trainings
+@inject IQAllotedService qservice
+@inject NavigationManager nav
+
+@inject Blazored.LocalStorage.ILocalStorageService store
+
+@using PETAS.Classes
+
+@if(pendingTrainings == null)
+{
+    <div class="spinner">Loading...</div>
+}
+else
+{
+    
+
+<div class="card-header">Active Trainings
+</div>
+
+<div class="table-responsive">
+    <table class="align-middle mb-0 table table-borderless table-striped table-hover">
+        <thead>
+        <tr>
+            <th class="text-center">#</th>
+            <th>Training</th>
+            <th class="text-center">Certification</th>
+            <th class="text-center">Period From</th>
+            <th class="text-center">Period To</th>
+            <th class="text-center">Status</th>
+            <th class="text-center">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+                @foreach(var emp in pendingTrainings)
+                {
+                    <tr>
+                        <td class="text-center text-muted">#345</td>
+                        <td>
+                            <div class="widget-content p-0">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-left mr-3">
+                                        <div class="widget-content-left">
+                                            <img width="40" class="rounded-circle" src="assets/images/avatars/4.jpg" alt="">
+                                        </div>
+                                    </div>
+                                    <div class="widget-content-left flex2">
+                                        <div class="widget-heading">@emp.TrainingName</div>
+                                        <div class="widget-subheading opacity-7">@emp.TrainingGroup.GroupName</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-center">@emp.TrainingCertification.CertificationName</td>
+                        <td class="text-center">@emp.DateFrom</td>
+                        <td class="text-center">@emp.DateTo</td>
+                        <td class="text-center">
+                            <div class="badge badge-warning">@emp.TrainingStatus.TrainingTypeStatus</div>
+                        </td>
+                        <td class="text-center">
+                            <button type="button" id="PopoverCustomT-2" class="btn btn-primary btn-sm">Study</button>
+                            <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm" onclick="@ShowTestModal">Take Test</button>
+                        </td>
+                    </tr>
+                }
+        </tbody>
+    </table>
+
+    <Modal @ref="@modalQuestions" ShowBackdrop="false">
+    <ModalContent Centered="true" Size="ModalSize.Default" Scrollable="true" Fullscreen="true">
+        <ModalHeader>
+            Assessment
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody MaxHeight="150">
+            @if(questions != null)
+            {
+                <div class="card mb-3 text-white bg-success" style="width: 50rem; margin: 3rem auto">
+                  <div class="row g-0">
+                        <div class="col-md-4">
+                          <img
+                            src="https://www.kindacode.com/wp-content/uploads/2021/08/man.jpg"
+                            class="img-fluid rounded-start"
+                            alt="Profile Picture"
+                          />
+                        </div>
+
+                        <div class="col-md-8">
+                              <div class="card-body">
+                                <h3 class="card-title">Assessment</h3>
+                                <p class="card-text">
+                                  Graduated from college with a computer science major. 20 years of
+                                  software experience.
+                                </p>
+                                <p class="card-text">
+                                  <small>Skills: CSS, Javascript, bootstrap, React</small>
+                                </p>
+                             </div>
+                       </div>
+                    </div>
+                </div>
+            }    
+        </ModalBody>
+        <ModalFooter>
+            <Button onclick="@HideModal">Close</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+</div>
+
+}
+
+@code{
+
+    private List<Training> pendingTrainings;
+    private Modal modalQuestions;
+    private string selectedSlide;
+    List<AssessmentQuestionPool> questions;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //get employee data stored in the browser
+        var eData = await store.GetItemAsync<Employee>(Storage.employeeData);
+        await base.OnInitializedAsync();
+        pendingTrainings = await GetEmployeeAssignedTrainings(eData.EmployeeId);
+    }
+
+    private async Task<List<Training>> GetEmployeeAssignedTrainings(int? employeeID)
+    {
+        List<Training> result = new List<Training>();
+        var aList = await trainings.GetAssignedTrainings(employeeID);
+        if(aList != null)
+        {
+            foreach(var item in aList)
+            {
+                var obj = await trainings.GetTraining(item.TrainingId);
+                if ((obj != null) && (obj.TrainingStatusId == 1))
+                {
+                    result.Add(obj);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private Task ShowTestModal()
+    {
+        //modalQuestions.Visible = true;
+        //questions = await qservice.GetSelectedQuestions(3, 1);
+        //await modalQuestions.Show();
+        nav.NavigateTo(@"student/studentdashboard");
+        return Task.CompletedTask;
+    }
+
+    private Task HideModal()
+    {
+        return modalQuestions.Hide();
+    }
+
+}

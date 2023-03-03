@@ -1,0 +1,146 @@
+﻿@inject ITrainingResourceTypeService resourceTypeService
+@inject IFileUploadService fService
+@inject IConfiguration configure
+@inject INotificationService notif
+@inject Blazored.LocalStorage.ILocalStorageService store
+
+@using PETAS.Models.Domain
+@using PETAS.Models.Domain.Others
+
+@if(resourceTypeList == null)
+{
+    <div class="spinner">Loading...</div>
+}
+else
+{
+    <Fields>
+        <Alert Color="Color.Primary" Visible="true">
+        <Field>
+            <FieldLabel>Name of Resource</FieldLabel>
+            <TextEdit Placeholder="enter name of resource" Color="Color.Success" />
+        </Field>
+        </Alert>
+
+        <Divider />
+
+        <Alert Color="Color.Primary" Visible="true">
+        <Field>
+            <FieldLabel>Resource Lookup</FieldLabel>
+            <Autocomplete TItem="TrainingResourceType"
+                        TValue="string"
+                        Data="@resourceTypeList"
+                        TextField="@(( item ) => $"{item.TrainingResourceType1.Trim()}({item.TrainingResourceExt.Trim()})")"
+                        ValueField="@(( item ) => item.Id.ToString())"
+                        @bind-SelectedValue="@selectedSearchValue"
+                        @bind-SelectedText="selectedAutoCompleteText"
+                        Placeholder="Search for resource type..."
+                        Filter="AutocompleteFilter.StartsWith"
+                        FreeTyping
+                        CustomFilter="@(( item, searchValue ) => item.TrainingResourceType1.IndexOf( searchValue, 0, StringComparison.CurrentCultureIgnoreCase ) >= 0 )">
+                <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
+            </Autocomplete>
+        </Field>
+
+        </Alert>
+    </Fields>
+
+    <Field>
+        <FileEdit Filter=".pdf, .mp3, .mp4" Changed="@OnFileSelectionChanged" />
+    </Field>
+    <br />
+    <div id="animator"></div>
+    <Button Color="Color.Primary" Clicked="OnSubmitResourceFile">Upload Resource File</Button>
+}
+
+@code{
+    private IEnumerable<TrainingResourceType> resourceTypeList;
+    private TrainingResourceType objResourceType { get; set; }
+    private string selectedAutoCompleteText { get; set; }
+    private string selectedSearchValue { get; set; }
+    private string message { get; set; } = string.Empty;
+    private IFileEntry selectedFile {   get;   set;  }
+    private bool isLoaded = true;
+    private UploadedFile uploadedFile;
+    private const string usr = @"userKey";
+
+    protected override async Task OnInitializedAsync()
+    {
+        resourceTypeList = await LoadResourceTypeListAsync();
+        await base.OnInitializedAsync();
+    }
+
+    #region Private-methods
+
+    private async Task<IEnumerable<TrainingResourceType>> LoadResourceTypeListAsync()
+    {
+        return await resourceTypeService.GetTrainingResourceTypes();
+    }
+
+    private async Task OnSubmitResourceFile()
+    {
+        //submits resource file into the database
+        int MAXALLOWEDSIZE = 5000000;
+        isLoaded = false;
+        if ((selectedSearchValue != "0") && (message != string.Empty))
+        {
+            try
+            {
+                MemoryStream ms;
+                //Stream stream = selectedFile.OpenReadStream(5000000);
+                using(Stream stream = selectedFile.OpenReadStream(MAXALLOWEDSIZE))
+                using(ms = new MemoryStream())
+                {
+                    await stream.CopyToAsync(ms);
+                }
+
+
+                uploadedFile = new UploadedFile();
+                uploadedFile.FileName = message;
+                uploadedFile.FilePath = configure.GetValue<string>("UploadTo");
+                uploadedFile.ResourceType = selectedFile.Type;
+                uploadedFile.FileContent = ms.ToArray();
+
+                uploadedFile.inputter = await store.GetItemAsync<string>(usr);
+                //call API
+                if (selectedFile.Type.Contains(@"video"))
+                {
+
+                }
+                else
+                {
+                    isLoaded = await fService.TrainingResourceUploadAsync(uploadedFile,new TrainingResourceType { Id = int.Parse(selectedSearchValue) } );
+                    if (isLoaded)
+                    {
+                        message = $"Contents of {uploadedFile.FileName} uploaded to server successfully";
+                        await notif.Success(message, @"Upload success");
+                        message = string.Empty;
+                        StateHasChanged();
+                    }
+                }
+
+            }
+            catch(Exception x)
+            {
+                message = $"error :{x.Message}";
+                isLoaded = true;
+            }
+        }
+        else
+        {
+            isLoaded = true;
+        }
+    }
+
+    private async Task OnFileSelectionChanged(FileChangedEventArgs e)
+    {
+        if (e.Files.Count() > 0)
+        {
+            selectedFile = e.Files[0];
+            message = selectedFile.Name;
+            var s = selectedFile.Type;
+            StateHasChanged();
+        }
+    }
+
+    #endregion
+}

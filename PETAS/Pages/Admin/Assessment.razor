@@ -1,0 +1,35 @@
+﻿@page "/admin/assessment"
+@inherits MainLayout
+
+@inject HttpClient http
+
+<section>
+    <div class="flex-container">
+        <div class="hover-overlay ripple shadow strong rounded float-child flex-child">
+            <Badge  Color="Color.Primary">
+                <Figure Size="FigureSize.Is256x256">
+                    <FigureImage Source="../images/group_2.jpg" AlternateText="empty-256x256" />
+                    <FigureCaption>Training Group?</FigureCaption>
+                </Figure>
+            </Badge>
+        </div>
+        <div class="flex-child magenta">
+            Oi
+        </div>
+        <div class="flex-child magenta">
+            Third Oi
+        </div>
+        <div class="flex-child magenta">
+            Fourth Oi
+        </div>
+    </div>
+</section>
+
+<section>
+    <h3>This is a second section</h3>
+</section>
+
+@code {
+    //fetching training domain data from the REST API...as a test
+    
+}

@@ -1,0 +1,115 @@
+﻿@inject IAssessmentSubjectService subjectService
+@inject IFileUploadService fuploadService
+@inject IConfiguration config
+@inject INotificationService notifier
+@inject IJSRuntime jsRuntime
+
+@using System.IO
+@using PETAS.Models.Domain.Others
+
+@if (!loaded)
+{
+    <div class="spinner">Loading...</div>
+}
+
+@if (assessmentSubjectList == null)
+{
+    <div class="spinner">Loading...</div>
+}
+else
+{
+    <TitleComponent Title="Written-Answers upload component" />
+    <Alert Color="Color.Primary" Visible="true">
+        <Field>
+            <FieldLabel>Question upload type</FieldLabel>
+            <TextEdit Disabled="true" Text="Written-answers" Color="Color.Success" />
+        </Field>
+
+        <Field>
+            <Select TValue="int" @bind-SelectedValue="@selectedV">
+                @foreach(var dd in assessmentSubjectList)
+                {
+                    <SelectItem Value="dd.Id">@dd.SubjectName</SelectItem>
+                }
+            </Select>
+        </Field> 
+
+        <Field>
+            <FileEdit Filter=".xlsx" Changed="@OnChanged" />
+        </Field>
+        <br />
+        <div id="animator"></div>
+        <Button Color="Color.Primary" Clicked="OnValidSubmit">Upload WRTANS Questions</Button>
+    </Alert>
+    
+}
+
+
+@code{
+    private bool loaded = true;
+    private AssessmentSubject objAssessmentSubject = new AssessmentSubject();
+    private IEnumerable<AssessmentSubject> assessmentSubjectList;
+
+    private UploadedFile uploadedFile;
+
+    private Validations validations = new Validations();
+    private string message = string.Empty;
+    private IFileEntry selectedFile;
+    int selectedV;
+
+    protected override async Task OnInitializedAsync()
+    {
+        assessmentSubjectList = await GetSubjectList();
+        await base.OnInitializedAsync();
+    }
+
+    private async Task<IEnumerable<AssessmentSubject>> GetSubjectList()
+    {
+        return await subjectService.GetAllAssessmentSubjects();
+    }
+
+    private async Task OnChanged(FileChangedEventArgs e)
+    {
+        if (message == string.Empty)
+        {
+            selectedFile = e.Files[0];
+            message = selectedFile.Name;
+            StateHasChanged();
+        }
+    }
+
+    private async Task OnValidSubmit()
+    {
+        if ((selectedV > 0) && (message != string.Empty))
+        {
+            try
+            {
+                loaded = false;
+                Stream stream = selectedFile.OpenReadStream();
+                MemoryStream ms = new MemoryStream();
+                await stream.CopyToAsync(ms);
+
+                uploadedFile = new UploadedFile();
+                uploadedFile.FileName = message;
+                uploadedFile.FilePath = config.GetValue<string>("UploadTo");
+                uploadedFile.QuestionType = @"Multiple Choice (MCANS)";
+                uploadedFile.FileContent = ms.ToArray();
+
+                //upload contents via API call
+                string resultString = await fuploadService.UploadWRTANSFileContentDbAsync(uploadedFile);
+                loaded = true;
+
+                //call API to upload file unto server
+                bool bln = await fuploadService.UploadFileAsync(uploadedFile);
+
+                message = resultString;
+            }
+            catch(Exception x)
+            {
+                
+            }
+            
+        }
+    }
+
+}

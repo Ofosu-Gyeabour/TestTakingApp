@@ -1,0 +1,66 @@
+﻿@inject IQuestionTypeService qtypeService
+@inject IJSRuntime JS
+@inject IConfiguration config
+
+@using System.Diagnostics;
+@using System
+@using System.IO
+
+@if(questionTypes == null)
+{
+    <div class="spinner">Loading...</div>
+}
+else
+{
+    <ListGroup Mode="ListGroupMode.Selectable" @bind-SelectedItem="selectedItem">
+        @foreach(var q in questionTypes)
+        {
+            <ListGroupItem Name="@q.QuestionType1">@q.QuestionType1</ListGroupItem>
+        }
+    </ListGroup>
+    <br />
+    <Button Color="Color.Danger" Clicked="Download">Download Template</Button>
+    <div id="downloader" class=". d-none">
+        <a class="invisible" href="uploads/MCANS.xlsx"></a>
+    </div>
+}
+
+@code {
+    private IEnumerable<QuestionType> questionTypes;
+    private string selectedItem = string.Empty;
+    private MemoryStream fileStream;
+
+    protected override async Task OnInitializedAsync()
+    {
+        questionTypes = await GetFileNames();
+        await base.OnInitializedAsync();
+    }
+
+    private async Task<IEnumerable<QuestionType>> GetFileNames()
+    {
+        //get the records of the files system can upload
+        //incorporate error handling features later
+        return await qtypeService.GetAllQuestionTypes();
+    }
+
+    private async Task Download()
+    {
+        //get file stream
+        //generate and download file
+        var _select = await getFileName(selectedItem);
+        if (_select == @"MCANS")
+        {
+            var mcansfpath = config.GetValue<string>("MCANSTemplate");
+            await JS.InvokeVoidAsync("MCANSdownloadFileFromStream");
+        }
+    }
+
+    private async Task<string> getFileName(string selected)
+    {
+        var str = selected.Split(' ')[2];
+        str = str.Replace('(',' ');
+        str = str.Replace(')',' ');
+
+        return str.Trim();
+    }
+}

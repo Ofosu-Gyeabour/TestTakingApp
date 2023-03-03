@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_PublishTargetUrl>C:\Users\aonana\Desktop\publish</_PublishTargetUrl>
+    <History>True|2022-03-29T18:00:58.8463147Z;True|2022-03-29T16:38:04.8061556+00:00;True|2022-03-10T17:54:05.5859871+00:00;True|2022-03-10T17:04:04.6900703+00:00;</History>
+  </PropertyGroup>
+</Project>

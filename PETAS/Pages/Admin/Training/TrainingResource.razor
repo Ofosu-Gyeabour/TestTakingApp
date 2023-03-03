@@ -1,0 +1,115 @@
+﻿@inject ITrainingResourceTypeService _tResource
+
+@if (resourceTypes == null){
+    <div class="spinner">Loading...</div>
+}
+else
+{
+    <TitleComponent Title="Input the type of resource PASL system should allow" />
+    <Row>
+        <Column ColumnSize="ColumnSize.Is6">
+            <TitleComponent Title="Training Resource Type" />
+            <Alert Color="Color.Primary" Visible="true">
+                <Validations @ref="validations" Mode="ValidationMode.Manual" Model="oResourceType">
+                    <Validation Validator="@ValidationRule.IsNotEmpty">
+                        <Field>
+                            <Addons>
+                                <TextEdit Placeholder="Resource type" @bind-Text="oResourceType.TrainingResourceType1" />
+                            </Addons>
+                        </Field> 
+
+                        <Field>
+                            <Addons>
+                                <TextEdit Placeholder="Resource type extension" @bind-Text="oResourceType.TrainingResourceExt" />
+                            </Addons>
+                        </Field> 
+                    </Validation>
+                </Validations>
+                <Button Color="Color.Primary" Block Clicked="OnSaveResourceType">Save Resource</Button>
+            </Alert>
+        </Column>
+
+        <Column ColumnSize="ColumnSize.Is6">
+            <TitleComponent Title="Training Resource List" />
+            <Alert Color="Color.Primary" Visible="true">
+                <DataGrid TItem="TrainingResourceType" Data="@resourceTypes"
+                @bind-SelectedRow="oResourceType" 
+                Responsive 
+                Hoverable = "true"
+                Striped = "true"
+                Narrow = "true"
+                Bordered="true"
+                
+                SelectedRowStyling="@OnSelectedRowStyling"
+                Virtualize 
+                VirtualizeOptions="@(new() { DataGridHeight = "250px"})">
+                    <DataGridCommandColumn TItem="TrainingResourceType" />
+                    <DataGridColumn TItem="TrainingResourceType" Field="@nameof(TrainingResourceType.Id)" Caption="#" Sortable="false" />
+                    <DataGridColumn TItem="TrainingResourceType" Field="@nameof(TrainingResourceType.TrainingResourceType1)" Caption="Resource" Sortable="false" />
+                    <DataGridColumn TItem="TrainingResourceType" Field="@nameof(TrainingResourceType.TrainingResourceExt)" Caption="Extension" Sortable="false" />
+                </DataGrid>
+            </Alert>
+        </Column>
+    </Row>
+}
+
+
+@code{
+    private TrainingResourceType oResourceType = new TrainingResourceType();
+    private IEnumerable<TrainingResourceType> resourceTypes;
+    private Validations validations;
+    private bool loaded;
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.resourceTypes = await GetResourceTypeList();
+        if (this.resourceTypes != null)
+        {
+            loaded = true;
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task OnSaveResourceType()
+    {
+        try
+        {
+            if (await validations.ValidateAll())
+            {
+                var result = await this._tResource.SaveTrainingResource(oResourceType);
+
+                if (result != null)
+                {
+                    resourceTypes = null;
+                    StateHasChanged();
+                    await ClearInputFields();
+                    await GetResourceTypeList();
+                }
+            }
+        }
+        catch (Exception)
+        {
+
+        }
+    }
+
+    private void OnSelectedRowStyling(TrainingResourceType oResource, DataGridRowStyling styling)
+    {
+        styling.Background = Background.Success;
+    }
+
+    private async Task<IEnumerable<TrainingResourceType>> GetResourceTypeList()
+    {
+        return resourceTypes =  await _tResource.GetTrainingResourceTypes();
+    }
+
+    private Task ClearInputFields()
+    {
+        this.oResourceType.Id = 0;
+        this.oResourceType.TrainingResourceType1 = string.Empty;
+        this.oResourceType.TrainingResourceExt = string.Empty;
+
+        return Task.CompletedTask;
+    }
+}

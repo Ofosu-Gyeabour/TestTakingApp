@@ -1,0 +1,121 @@
+﻿@inject IQuestionTypeService questionTypeService
+
+<TitleComponent Title="Question Types: The criteria of questions that is used for assessment in PASL" />
+
+@if (questionTypes == null)
+{
+    <div class="spinner">Loading...</div>
+}
+else
+{
+    <Row>
+        <Column ColumnSize="ColumnSize.Is6">
+            <TitleComponent Title="Question Type" />
+            <Alert Color="Color.Primary" Visible="true">
+                <Validations @ref="validations" Mode="ValidationMode.Manual" Model="oQuestionType">
+                    <Validation Validator="@ValidationRule.IsNotEmpty">
+                        <Field>
+                            <Addons>
+                                <TextEdit Placeholder="enter subject name" @bind-Text="oQuestionType.QuestionType1" />
+                            </Addons>
+                        </Field> 
+
+                    </Validation>
+                </Validations>
+                <Button Color="Color.Primary" Block Clicked="OnSaveQuestionType">Save Question Type</Button>
+                <Button Color="Color.Primary" Block Clicked="OnDeleteQuestionType">Delete Question Type</Button>
+            </Alert>
+        </Column>
+
+        <Column ColumnSize="ColumnSize.Is6">
+            <TitleComponent Title="Question Type List" />
+            <Alert Color="Color.Primary" Visible="true">
+                <DataGrid TItem="QuestionType" Data="@questionTypes"
+                @bind-SelectedRow="oQuestionType" 
+                Responsive 
+                Hoverable = "true"
+                Striped = "true"
+                Narrow = "true"
+                Bordered="true"
+                
+                SelectedRowStyling="@OnSelectedRowStyling"
+                Virtualize 
+                VirtualizeOptions="@(new() { DataGridHeight = "250px"})">
+                    <DataGridCommandColumn TItem="QuestionType" />
+                    <DataGridColumn TItem="QuestionType" Field="@nameof(QuestionType.Id)" Caption="#" Sortable="false" />
+                    <DataGridColumn TItem="QuestionType" Field="@nameof(QuestionType.QuestionType1)" Caption="Question Type" Sortable="false" />
+                </DataGrid>
+            </Alert>
+        </Column>
+    </Row>
+}
+
+@code{
+    private bool loaded;
+    private IEnumerable<QuestionType> questionTypes;
+    private QuestionType oQuestionType = new QuestionType();
+    private Validations validations;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetQuestionLookupData();
+        await base.OnInitializedAsync();
+    }
+
+    private async Task GetQuestionLookupData()
+    {
+        //using service to make API call
+        this.questionTypes = await questionTypeService.GetAllQuestionTypes();
+        if (questionTypes != null)
+        {
+            loaded = true;
+        }
+    }
+
+    private async Task OnSaveQuestionType()
+    {
+        //uses service to make an API Post call
+        //determines status and updates table grid accordingly
+        if (await validations.ValidateAll())
+        {
+            var result = await questionTypeService.SaveQuestionType(oQuestionType);
+            if (result != null)
+            {
+                this.questionTypes = null;
+                await GetQuestionLookupData();
+                StateHasChanged();
+                await ClearForm();
+            }
+        }
+    }
+
+    private async Task OnDeleteQuestionType()
+    {
+        //check validation, and then proceed to post deletion requestion to API via service
+        if (await validations.ValidateAll())
+        {
+            loaded = false;
+            var bln = await questionTypeService.DeleteQuestionType(oQuestionType);
+            if (bln)
+            {
+                this.questionTypes = null;
+                await GetQuestionLookupData();
+                StateHasChanged();
+                await ClearForm();
+            }
+        }
+    }
+
+    Task ClearForm()
+    {
+        oQuestionType.Id = 0;
+        oQuestionType.QuestionType1 = string.Empty;
+
+        return Task.CompletedTask;
+    }
+
+    private void OnSelectedRowStyling(QuestionType qtype, DataGridRowStyling styling)
+    {
+        styling.Background = Background.Success;
+    }
+}

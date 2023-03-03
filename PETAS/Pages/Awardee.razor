@@ -1,0 +1,103 @@
+﻿@inject ICertificationAwardService certService
+
+@if (certificationAwardList == null)
+{
+    <div class="spinner">Loading</div>
+}
+else
+{
+    <Row>
+        <Column ColumnSize="ColumnSize.Is6">
+            <TitleComponent Title="Certifying Body" />
+            <Alert Color="Color.Primary" Visible="true">
+                <Validations @ref="validations" Mode="ValidationMode.Manual" Model="@certificationAwarder">
+                    <Validation Validator="@ValidationRule.IsNotEmpty">
+                        <Field>
+                            <Addons>
+                                <TextEdit Placeholder="name of training partner/organization" @bind-Text="@certificationAwarder.Awarder" />
+                            </Addons>
+
+                        </Field> 
+                    </Validation>
+                </Validations>
+                <Button Color="Color.Primary" Block Clicked="@OnAwardeeSaved">Save Cert. Awarder</Button>
+            </Alert>
+        </Column>
+
+        <Column ColumnSize="ColumnSize.Is6">
+            <TitleComponent Title="Accredited Certified Bodies" />
+            <Alert Color="Color.Primary" Visible="true">
+                <DataGrid TItem="CertificationAwarder" Data="@certificationAwardList"
+                @bind-SelectedRow="@certificationAwarder" 
+                Responsive 
+                Hoverable = "true"
+                Striped = "true"
+                Narrow = "true"
+                Bordered="true"
+                
+                SelectedRowStyling="@OnSelectedRowStyling"
+                Virtualize 
+                VirtualizeOptions="@(new() { DataGridHeight = "250px"})">
+                    <DataGridCommandColumn TItem="CertificationAwarder" />
+                    <DataGridColumn TItem="CertificationAwarder" Field="@nameof(CertificationAwarder.Id)" Caption="#" Sortable="false" />
+                    <DataGridColumn TItem="CertificationAwarder" Field="@nameof(CertificationAwarder.Awarder)" Caption="Cert Awarder" Sortable="false" />
+                </DataGrid>
+            </Alert>
+        </Column>
+    </Row>
+
+}
+
+@code{
+    private CertificationAwarder certificationAwarder = new CertificationAwarder();
+    private IEnumerable<CertificationAwarder> certificationAwardList;
+    private Validations validations;
+
+    private bool loaded;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetAwardersList();
+        if (this.certificationAwardList != null)
+        {
+            loaded = true;
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task OnAwardeeSaved()
+    {
+        if (await validations.ValidateAll())
+        {
+            var responseObj = certService.SaveCertificationAwarder(certificationAwarder);
+            if (responseObj != null)
+            {
+                certificationAwardList = null;
+                loaded = false;
+                StateHasChanged();
+                await ClearInputFields();
+                await GetAwardersList();
+            }
+        }
+    }
+
+    private Task ClearInputFields()
+    {
+        certificationAwarder.Id = 0;
+        certificationAwarder.Awarder = string.Empty;
+
+        return Task.CompletedTask;
+    }
+
+    private async Task GetAwardersList()
+    {
+        certificationAwardList = await certService.GetCertificationAwarders();
+    }
+
+    private void OnSelectedRowStyling(CertificationAwarder oAwarder, DataGridRowStyling styling)
+    {
+        styling.Background = Background.Success;
+    }
+
+}

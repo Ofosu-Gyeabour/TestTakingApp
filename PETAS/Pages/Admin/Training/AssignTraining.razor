@@ -1,0 +1,455 @@
+﻿@page "/admin/training/assigntraining"
+@inject IHRMSService hrms
+@inject ITrainingService trainingService
+@inject IDragService dragService
+@inject IMailService mailService
+@inject Blazored.LocalStorage.ILocalStorageService localStore
+@inject INotificationService notify
+@inject IMessageService messageService
+
+@using PETAS.Classes
+
+@*<TitleComponent Title="Click on selection criteria below" />*@
+
+<Row>
+    <div class="container">
+        <div class="row">
+            
+            <div class="col-md-3">
+                <Card Background="Background.Danger" @onclick="GetAllDepartments">
+                    <Tooltip Text="By Department">
+                    <CardBody>
+                        <CardText>
+                            <div class="d-flex align-items-center justify-content-center"><p><em><h6>By Department</h6></em></p></div>
+                        </CardText>
+                    </CardBody>
+                    </Tooltip>
+                </Card>
+            </div>
+            <div class="col-md-3">
+                <Card Background="Background.Secondary" @onclick="GetGrades">
+                    <Tooltip Text="By Grade">
+                    <CardBody>
+                        <CardText>
+                            <div class="d-flex align-items-center justify-content-center"><p><em><h6>By Grade</h6></em></p></div>
+                        </CardText>
+                    </CardBody>
+                    </Tooltip>
+                </Card>
+            </div>
+
+            <div class="col-md-3">
+                <Card Background="Background.Info" @onclick="GetGroups">
+                    <Tooltip Text="By Group">
+                    <CardBody>
+                        <CardText>
+                            <div class="d-flex align-items-center justify-content-center"><p><em><h6>By Group</h6></em></p></div>
+                        </CardText>
+                    </CardBody>
+                    </Tooltip>
+                </Card>
+            </div>
+            <div class="col-md-3">
+                <Card Background="Background.Info" @onclick="GetJobTitles">
+                    <Tooltip Text="By Job Title">
+                    <CardBody>
+                        <CardText>
+                            <div class="d-flex align-items-center justify-content-center"><p><em><h6>By Job Title</h6></em></p></div>
+                        </CardText>
+                    </CardBody>
+                    </Tooltip>
+                </Card>
+            </div>
+        </div>
+    </div>
+
+</Row>
+<Divider />
+@if((departments == null) || (trainings == null))
+{
+    <div class="spinner">Loading...</div>
+}
+else
+{
+    <Row>
+        <Column ColumnSize="ColumnSize.Is4">
+            <TitleComponent Title="Criteria" />
+            @if(departments.Count() > 0)
+            {
+                <Alert Color="Color.Primary" Visible="true">
+                    <ListGroup>
+                        @foreach(var d in departments)
+                        {
+                            <div draggable="true" @ondragstart="eventArgs => { OnDragStart(eventArgs, d); }">
+                                <ListGroupItem Name="@d.Name">@d.Name</ListGroupItem>
+                            </div>
+                        }
+                    </ListGroup>
+                </Alert>
+            }
+
+            @if(grades.Count() > 0)
+            {
+                <Alert Color="Color.Primary" Visible="true">
+                    <ListGroup>
+                        @foreach(var gd in grades)
+                        {
+                            <div draggable="true" @ondragstart="eventArgs => { OnDragStart(eventArgs, gd); }">
+                                <ListGroupItem Name="@gd.Letter">@gd.Letter</ListGroupItem>
+                            </div>
+                        }
+                    </ListGroup>
+                </Alert>
+            }
+
+            @if(groups.Count() > 0)
+            {
+                <Alert Color="Color.Primary" Visible="true">
+                    <ListGroup>
+                        @foreach(var gr in groups)
+                        {
+                            <div draggable="true" @ondragstart="eventArgs => { OnDragStart(eventArgs, gr); }">
+                                <ListGroupItem id="@gr.GroupId" Name="@gr.Name">@gr.Name</ListGroupItem>
+                            </div>
+                        }
+                    </ListGroup>
+                </Alert>
+            }
+
+            @if(jobTitles.Count() > 0)
+            {
+                <Alert Color="Color.Primary" Visible="true">
+                    <ListGroup>
+                        @foreach(var jt in jobTitles)
+                        {
+                            <div draggable="true" @ondragstart="eventArgs => { OnDragStart(eventArgs, jt); }">
+                                <ListGroupItem id="@jt.JobTitleId" Name="@jt.Name">@jt.Name</ListGroupItem>
+                            </div>
+                        }
+                    </ListGroup>
+                </Alert>
+            }
+        </Column>
+        <Column ColumnSize="ColumnSize.Is6">
+            <TitleComponent Title="Open Trainings" />
+            <Alert Color="Color.Primary" Visible>
+                @if(trainings.Count() > 0)
+                {
+                    <Table Striped="true" Hoverable="true" Responsive="true">
+                        <TableHeader>
+                            <TableRow>
+                                <TableHeaderCell>#</TableHeaderCell>
+                                <TableHeaderCell>Name</TableHeaderCell>
+                                <TableHeaderCell>Grouping</TableHeaderCell>
+                                <TableHeaderCell>Status</TableHeaderCell>
+                            </TableRow>
+                        </TableHeader>
+
+                        <TableBody>
+                            @foreach(var t in trainings)
+                            {
+                               <TableRow dropzone="move" ondragover="event.preventDefault();" @ondrop="(e => OnDropTarget(e,t))">
+                                    <TableRowCell>@t.Id</TableRowCell>
+                                    <TableRowCell>@t.TrainingName</TableRowCell>
+                                    <TableRowCell>@t.TrainingGroup.GroupName</TableRowCell>
+                                    <TableRowCell>@t.TrainingStatus.TrainingTypeStatus</TableRowCell>
+                                </TableRow>  
+                            }
+                        </TableBody>
+                    </Table>
+                }
+            </Alert>
+        </Column>
+        <Column ColumnSize="ColumnSize.Is2">
+            <Alert Color="Color.Primary" Visible>
+                Is3
+            </Alert>
+        </Column>
+    </Row>
+}
+
+
+@code{
+    private List<Department> departments = new List<Department>();
+    private Department department = new Department();
+
+    private List<Grade> grades = new List<Grade>();
+    private Grade grade = new Grade();
+
+    private List<Group> groups =new List<Group>();
+    private Group group = new Group();
+
+    private List<JobTitle> jobTitles = new List<JobTitle>();
+    private JobTitle jobTitle = new JobTitle();
+
+    private List<Training> trainings = new List<Training>();
+
+    bool Checked = false;
+
+    private string msg = string.Empty;
+    private string msgTraining = string.Empty;
+
+    private int rowIndex = 0;
+
+    private string dragType { get; set; } = string.Empty;
+    private object DraggedObject {get;set;}
+
+    void OnDragStart(DragEventArgs e, object o)
+    {
+        try
+        {
+            e.DataTransfer.EffectAllowed = "move";
+            dragType = o.GetType().Name;
+            this.DraggedObject = o;
+
+            switch (dragType)
+            {
+                case @"Department":
+                    this.department = (Department) o;
+                    break;
+                case @"Group":
+                    this.group = (Group) o;
+                    break;
+                case @"Grade":
+                    this.grade = (Grade) o; 
+                    break;
+                case "JobTitle":
+                    this.jobTitle = (JobTitle) o;
+                    break;
+            }
+        }
+        catch(Exception x)
+        {
+
+        }
+
+    }
+
+    async Task OnDropTarget(DragEventArgs ev, object objT)
+    {
+        try
+        {
+            //send action to the dragService
+            var emps = await dragService.GetEmployeesForTrainingAsync(dragType, (Training)objT, DraggedObject);
+            if (emps.Count() > 0)
+            {
+                //save data to the data store and push email alerts to all of them
+                var usr = await localStore.GetItemAsync<string>(Storage.userKey);
+                var respCode = await trainingService.AssignTrainingAsync((Training)objT, emps,usr);
+                if (respCode.Length > 0)
+                {
+                    await mailService.SendMailNotification(emps, (Training)objT);
+                    //notify.Warning(respCode, @"Status");
+                    messageService.Info(respCode,@"Status");
+                }
+                StateHasChanged();
+            }
+        }
+        catch(Exception xx)
+        {
+            
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        trainings = await GetTrainings();
+        //trigger and load departments data first
+        await GetAllDepartments();
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task<List<Training>> GetTrainings()
+    {
+        return await trainingService.GetTrainingsAsync();
+    }
+
+    private async Task GetAllDepartments()
+    {
+        try
+        {
+            departments = await hrms.GetDepartmentsAsync();
+            if (departments.Count() > 0){
+                //employees.Clear();
+                grades.Clear();
+                groups.Clear();
+                jobTitles.Clear();
+
+                dragType = @"Department";
+                StateHasChanged();
+            }
+        }
+        catch(Exception x)
+        {
+
+        }
+    }
+
+    //private async Task GetAllStaff()
+    //{
+    //    try
+    //    {
+    //        employees = await hrms.GetEmployeeAsync();
+    //        if (employees.Count() > 0)
+    //        {
+    //            //clear the other lists and place the employee control in their place
+    //            departments.Clear();
+    //            grades.Clear();
+    //            groups.Clear();
+    //            jobTitles.Clear();
+
+    //            dragType = @"Employee";
+    //            StateHasChanged();
+    //        }
+    //    }
+    //    catch(Exception x)
+    //    {
+
+    //    }
+    //}
+
+    private async Task GetGrades()
+    {
+        try
+        {
+            grades = await hrms.GetGradeAsync();
+            if (grades.Count() > 0)
+            {
+                departments.Clear();
+                //employees.Clear();
+                groups.Clear();
+                jobTitles.Clear();
+
+                dragType = @"Grade";
+                StateHasChanged();
+            }
+        }
+        catch(Exception x)
+        {
+
+        }
+    }
+
+    private async Task GetGroups()
+    {
+        try
+        {
+            groups = await hrms.GetGroupAsync();
+            if (groups.Count() > 0)
+            {
+                departments.Clear();
+                //employees.Clear();
+                grades.Clear();
+                jobTitles.Clear();
+
+                dragType = @"Group";
+                StateHasChanged();
+            }
+        }
+        catch(Exception x)
+        {
+
+        }
+    }
+
+    private async Task GetJobTitles()
+    {
+        try
+        {
+            jobTitles = await hrms.GetJobTitlesAsync();
+            if (jobTitles.Count() > 0)
+            {
+                departments.Clear();
+                //employees.Clear();
+                grades.Clear();
+                groups.Clear();
+
+                dragType = @"JobTitle";
+                StateHasChanged();
+            }
+        }
+        catch(Exception x)
+        {
+
+        }
+    }
+
+    Task OnRememberDepChanged(Department selected, object value)
+    {
+        //rowChecked
+        if ((bool)value)
+        {
+            int _id = selected.DepartmentId;
+            var str = selected.Name;
+        }
+
+        return Task.CompletedTask;
+    }
+
+    Task OnRememberEmpChanged(Employee emp, object value)
+    {
+        if ((bool)value)
+        {
+
+        }
+        return Task.CompletedTask;
+    }
+
+    Task OnRememberGradeChanged(Grade g, object value){
+        if ((bool)value)
+        {
+
+        }
+        return Task.CompletedTask;
+    }
+
+    Task OnRememberGroupChanged(Group g, object value){
+        if ((bool)value)
+        {
+
+        }
+        return Task.CompletedTask;
+    }
+
+    Task OnRememberJobTitleChanged(JobTitle jt, object value){
+        if ((bool)value)
+        {
+
+        }
+        return Task.CompletedTask;
+    }
+
+    void ClickedMe(EventArgs e)
+    {
+        int _id = int.Parse(e.ToString());
+    }
+
+    #region selectedRowStyling
+
+    private void OnSelectedDepartmentRowStyling(Department department, DataGridRowStyling styling)
+    {
+        styling.Background = Background.Success;
+    }
+
+    private void OnSelectedEmployeeRowStyling(Employee employee, DataGridRowStyling styling)
+    {
+        styling.Background = Background.Success;
+    }
+
+    private void OnSelectedGradeRowStyling(Grade grade, DataGridRowStyling styling)
+    {
+        styling.Background = Background.Success;
+    }
+
+    private void OnSelectedGroupRowStyling(Group group, DataGridRowStyling styling)
+    {
+        styling.Background = Background.Success;
+    }
+
+    private void OnSelectedJobTitleRowStyling(JobTitle jobTitle, DataGridRowStyling styling)
+    {
+        styling.Background = Background.Success;
+    }
+    #endregion
+}

@@ -1,0 +1,149 @@
+﻿@page "/"
+@layout LoginLayout
+@inject NavigationManager navManager
+@inject PETAS.Services.IUserAccountService authUserService
+@inject IMessageService msg
+
+@inject IConfiguration config
+@inject Blazored.LocalStorage.ILocalStorageService localStore
+@inject IHRMSService hrms
+@inject ISecureAccessService systemAccess
+@inject ITrainingService admService
+
+@using PETAS.Classes
+
+<section class="login">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-xl-10">
+        <div class="card" style="border-radius: 1rem;">
+          <div class="row g-0">
+            <div class="col-md-6 col-lg-5 d-none d-md-block">
+              <img
+                src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/img1.webp"
+                alt="login form"
+                class="img-fluid" style="border-radius: 1rem 0 0 1rem;"
+              />
+            </div>
+            <div class="col-md-6 col-lg-7 d-flex align-items-center">
+              <div class="card-body p-4 p-lg-5 text-black">
+
+                <!--<form>-->
+                  <EditForm Model="@model">
+                      <DataAnnotationsValidator />
+                  <div class="d-flex align-items-center mb-3 pb-1">
+                    <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>
+                    <span class="h1 fw-bold mb-0">
+                        <img src="images\PASL_Logo_2.jpg" alt="logo" class="img-fluid" />
+                    </span>
+                  </div>
+
+                  <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Sign into your account</h5>
+
+                  <div class="form-outline mb-4">
+                      
+                      <Validations @ref="validations" Mode="ValidationMode.Manual" Model="@model">
+                        
+                          <Addons>
+                            <Addon AddonType="AddonType.Start">
+                                <AddonLabel>User</AddonLabel>
+                            </Addon>
+                            <Addon AddonType="AddonType.Body">
+                                <Validation Validator="@ValidationRule.IsNotEmpty">
+                                    <TextEdit Placeholder="enter username" @bind-text="@model.username">
+                                        <Feedback>
+                                            <ValidationError>Please enter a user name</ValidationError>
+                                        </Feedback>
+                                     </TextEdit>
+                                </Validation>
+                            </Addon>
+                        </Addons>
+
+                        <Addons>
+                            <Addon AddonType="AddonType.Start">
+                                <AddonLabel>Pass</AddonLabel>
+                            </Addon>
+                            <Addon AddonType="AddonType.Body">
+                                <Validation Validator="@ValidationRule.IsNotEmpty">
+                                    <TextEdit Role="TextRole.Password" Placeholder="enter password" @bind-text="@model.pass">
+                                        <Feedback>
+                                            <ValidationError>Please enter a user password</ValidationError>
+                                        </Feedback>
+                                    </TextEdit>
+                                </Validation>
+                            </Addon>
+                        </Addons>
+
+                    </Validations>
+                  </div>
+
+                  <div class="pt-1 mb-4">
+                      <Button Color = "Color.Secondary" Clicked="@OnValidSubmit" Disabled="@loading">
+                          @if (loading) 
+                          {
+                            <span class="spinner-border spinner-border-sm mr-1"></span>
+                          }
+                          Login
+                      </Button>
+                  </div>
+
+                  <a class="small text-muted" href="https://10.150.0.243/cms/Login.aspx?pg=reset">Forgot password? Click here to reset</a>
+                  <p class="mb-5 pb-lg-2" style="color: #393f81;">Don't have an account?</p>
+                  </EditForm>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+@code{
+    private PETAS.Classes.User model = new PETAS.Classes.User();
+    private bool loading;
+    private Validations validations;
+    private string userKey = @"userKey";   //key to local storage holding info of currently logged-in user
+
+    private async Task OnValidSubmit()
+    {
+
+        if (await validations.ValidateAll())
+        {
+
+            //the form has been validated. continue with the login process by making service call
+            var s = config.GetConnectionString("SecureAccessConnectionString");
+
+            var b = await systemAccess.Login(model);
+            //if (b == null)
+            //{
+            //    await msg.Warning(string.Format("Unsuccessful login for {0}", model.username), @"Login Failure");
+            //}
+            //else
+            //{
+            var emp = await hrms.GetEmployee(model.username);
+            var obj = new PETAS.Classes.User  { username = @"nappiah"  };
+            if ((obj != null) && (emp != null))
+            {
+                var blnUser = await admService.IsAdministrator(model.username);
+                await msg.Info(string.Format("{0} logged in successfully", model.username), @"Login Success");
+                await localStore.SetItemAsync(userKey, model.username);
+                await localStore.SetItemAsync(Storage.employeeData, emp);
+
+                if (blnUser)
+                    {
+                        navManager.NavigateTo(@"admin/training/configuration");
+                    }
+                    else
+                    {
+                        navManager.NavigateTo(@"student/studentcenter");
+                    }
+                }
+                else
+                {
+                    await msg.Warning(string.Format("Unsuccessful log in for {0}. Please try again", model.username), @"Login Failure");
+                }
+            //}
+         }   
+    }
+}

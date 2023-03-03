@@ -1,0 +1,119 @@
+﻿@inject HttpClient http
+@inject INotificationService notify
+@inject ITrainingDomainService _tdService
+@using PETAS.Models.Domain
+ 
+@if (trainingDomainList == null)
+{
+    <div class="spinner">Loading...</div>
+}
+else
+{
+<TitleComponent Title="A domain is an identifiable group of human resource for which a training is planned" />
+    <Row>
+
+        <Column ColumnSize="ColumnSize.Is6">
+            <TitleComponent Title="Domain Details" />
+            <Alert Color="Color.Primary" Visible="true">
+                <Validations @ref="validations" Mode="ValidationMode.Manual" Model="@model">
+                    <Validation Validator="@ValidationRule.IsNotEmpty">
+                        <Field>
+                            <Addons>
+                                <TextEdit Placeholder="Name of Domain" @bind-Text="@model.DomainName" />
+                            </Addons>
+
+                            <Addons>
+                                <TextEdit Placeholder="Domain Description" @bind-Text="@model.DomainDescription" />
+                            </Addons>
+                        </Field> 
+                    </Validation>
+                </Validations>
+                <Button Color="Color.Primary" Block Clicked="@OnTrainingDomainSaved">Save Training Domain</Button>
+            </Alert>
+        </Column>
+
+        <Column ColumnSize="ColumnSize.Is6">
+            <TitleComponent Title="Domain Records" />
+            <Alert Color="Color.Primary" Visible="true">
+                <DataGrid TItem="PETAS.Models.Domain.TrainingDomain" Data="@trainingDomainList"
+                @bind-SelectedRow="@model" 
+                Responsive 
+                Hoverable = "true"
+                Striped = "true"
+                Narrow = "true"
+                Bordered="true"
+                
+                SelectedRowStyling="@OnSelectedRowStyling"
+                Virtualize 
+                VirtualizeOptions="@(new() { DataGridHeight = "250px"})">
+                    <DataGridCommandColumn TItem="PETAS.Models.Domain.TrainingDomain" />
+                    <DataGridColumn TItem="PETAS.Models.Domain.TrainingDomain" Field="@nameof(PETAS.Models.Domain.TrainingDomain.Id)" Caption="#" Sortable="false" />
+                    <DataGridColumn TItem="PETAS.Models.Domain.TrainingDomain" Field="@nameof(PETAS.Models.Domain.TrainingDomain.DomainName)" Caption="Domain Name" Sortable="false" />
+                    <DataGridColumn TItem="PETAS.Models.Domain.TrainingDomain" Field="@nameof(PETAS.Models.Domain.TrainingDomain.DomainDescription)" Caption="Description" Sortable="false" />
+                </DataGrid>
+            </Alert>
+        </Column>
+</Row>
+}
+
+@code{
+
+    private IEnumerable<PETAS.Models.Domain.TrainingDomain> trainingDomainList;
+    private PETAS.Models.Domain.TrainingDomain selectedDomain;
+    private PETAS.Models.Domain.TrainingDomain model = new PETAS.Models.Domain.TrainingDomain();
+    private Validations validations;
+    /* private bool loading; */
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetData();
+        await base.OnInitializedAsync();
+    }
+
+    private async Task GetData()
+    {
+        trainingDomainList = await _tdService.GetTrainingDomains();
+    }
+
+    private async Task OnTrainingDomainSaved()
+    {
+        try
+        {
+            if (await validations.ValidateAll())
+            {
+                var res = await this._tdService.PostTrainingDomain(model);
+                if (res != null)
+                {
+                    trainingDomainList = null; 
+                    StateHasChanged();
+                    await ClearInputFields();
+                    await GetData();
+                }
+            }
+        }
+        catch(Exception x)
+        {
+            StateHasChanged();
+        }
+    }
+
+    private Task showNotification(string msg)
+    {
+        return notify.Success(msg);
+    }
+
+    private void OnSelectedRowStyling(PETAS.Models.Domain.TrainingDomain domain, DataGridRowStyling styling)
+    {
+        styling.Background = Background.Success;
+    }
+
+    private Task ClearInputFields()
+    {
+        //clears the input fields for the next input
+        model.DomainName = string.Empty;
+        model.DomainDescription = string.Empty;
+
+        return Task.CompletedTask;
+    }
+
+}

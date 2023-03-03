@@ -1,0 +1,425 @@
+﻿@inject IAssessmentSubjectService subjectService
+@inject IAssessmentQuestionPoolService questionService
+@inject IQuestionTypeService questiontypeService
+@inject IObjectiveService oService
+@inject Blazored.LocalStorage.ILocalStorageService Lstore
+
+@inject ITrainingService tService
+@inject ITrainingAssessmentService tAssessmentService
+@inject IQAllotedService qService
+@inject IMessageService msg
+
+@inject IJSRuntime js
+
+@using PETAS.Models.Domain
+@using PETAS.Classes
+
+@if(subjects == null)
+{
+    <div class="spinner"><em>Loading...</em></div>
+}
+else
+{
+    <Row>
+        <Column ColumnSize="ColumnSize.Is12">
+                <Autocomplete TItem = "AssessmentSubject"
+                    TValue="int"
+                    Data = "@subjects"
+                
+                    @bind-SelectedText="selectedAutoCompleteText"
+                    TextField="@(( item ) => item.SubjectName)"
+                    ValueField="@(( item ) => item.Id)"
+                    Placeholder="Type to search for subject..."
+                    Filter="AutocompleteFilter.StartsWith"
+                    FreeTyping
+                    SelectedValueChanged = "@changedValueMCANS"
+                    CustomFilter="@(( item, searchValue ) => item.SubjectName.IndexOf( searchValue, 0, StringComparison.CurrentCultureIgnoreCase ) >= 0 )">
+                </Autocomplete>
+        </Column>
+    </Row>
+
+    @if(questionPoolData != null)
+    {
+         <Row>
+            <Column ColumnSize=ColumnSize.Is9>
+                <Alert Color="Color.Light" Visible="true">
+                    <Table Striped="true" Hoverable="true" Responsive="true">
+                        <TableHeader>
+                            <TableRowCell>#</TableRowCell>
+                            <TableRowCell>Question</TableRowCell>
+                        </TableHeader>
+                        <TableBody>
+                            @foreach(var q in questionPoolData)
+                            {
+                                <TableRow>
+                                    <TableRowCell><Check unchecked TValue="int?" @onchange="eventArgs=>{OnQuestionSelected(eventArgs,q);}"></Check></TableRowCell>
+                                    <TableRowCell>@q.Question</TableRowCell>
+                                </TableRow>
+                            }
+                        </TableBody>
+                    </Table>
+                    
+                </Alert>
+            </Column>
+
+            <Column ColumnSize=ColumnSize.Is3>  
+                @if (que != null)
+                {
+
+                    Task.Run(async () =>
+                    {
+                        ob = await oService.GetObjectiveClassAsync(que.Id);  
+                    });
+
+                    <Alert Visible="true" Color="Color.Primary">
+                        <Table Striped="true">
+                            <TableRow>
+                                <TableRowCell>Created Date</TableRowCell>
+                                <TableRowCell>@Convert.ToDateTime(@que.CreatedDate).ToString("dd-MMM-yyyy")</TableRowCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableRowCell>Created By</TableRowCell>
+                                <TableRowCell>@que.CreatedBy</TableRowCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableRowCell>Approved By</TableRowCell>
+                                <TableRowCell>@que.AuthorizedBy</TableRowCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableRowCell>Question No</TableRowCell>
+                                <TableRowCell>@que.Id.ToString()</TableRowCell>
+                            </TableRow>
+
+                            <TableRow>
+                                <TableRowCell>
+                                    <Button Color="Color.Primary" Clicked="ApproveQuestion">Approve</Button>
+                                </TableRowCell>
+                                <TableRowCell>
+                                    <Button Color="Color.Secondary" Clicked="ApprovedAllQuestions">Approve All</Button>
+                                </TableRowCell>
+                            </TableRow>
+                        </Table>
+                    </Alert>
+
+                    <Divider />
+                    @if (ob != null)
+                    {
+                        <Card>
+                            <CardTitle><p>Possible answers for @que.Id.ToString()</p></CardTitle>
+                            <ListGroup Flush="true" Mode="ListGroupMode.Selectable" @bind-SelectedItem="selectedListgroupItem">
+                                <ListGroupItem>@ob.Cobj1</ListGroupItem>
+                                <ListGroupItem>@ob.Cobj2</ListGroupItem>
+                                <ListGroupItem>@ob.Cobj3</ListGroupItem>
+                                <ListGroupItem>@ob.Cobj4</ListGroupItem>
+                            </ListGroup>
+                        </Card>
+                    }
+                    <div class="container">
+                        <div class="row">
+                            <Button Color="Color.Primary" Clicked="@ShowModal">Build Assessment</Button>
+                        </div> 
+                    </div>
+                }
+            </Column>
+        </Row>
+    }
+
+    <Modal @ref="assessmentRef">
+                <ModalContent Centered>
+                    <ModalHeader>
+                        <ModalTitle>@modalTitleString</ModalTitle>
+                        <CloseButton />
+                    </ModalHeader>
+                    <ModalBody>
+                        <Validations @ref="validations" Mode="ValidationMode.Manual" >
+                            <Fields>
+                                @*<Validation Validator="ValidationRule.IsNotEmpty">*@
+                                    <Field>
+                                        <FieldLabel>Training</FieldLabel>
+                                        <Select TValue="int?" @bind-SelectedValue="@model.TrainingId">
+                                            <SelectItem Value="0">select...</SelectItem>
+                                            @foreach(var t in trainingList)
+                                            {
+                                                <SelectItem Value="@t.Id">@t.TrainingName</SelectItem>
+                                            }
+                                        </Select>
+                                    </Field>
+                                @*</Validation>*@
+                                <br />
+                                <br />
+                                @*<Validation Validator="ValidationRule.IsNotEmpty">*@
+                                    <Field>
+                                        <FieldLabel>Assessment</FieldLabel>
+                                        <TextEdit Placeholder="Assessment name" @bind-Text="@model.AssessmentName"  />
+                                    </Field>
+                                @*</Validation>*@
+                                <Validation Validator="@isNumeric">
+                                    <Field>
+                                        <FieldLabel>Marks</FieldLabel>
+                                        <NumericEdit TValue="int?" Placeholder="alloted marks" Min="10" Max="20" @bind-Value="@model.AllotedAssessmentMarks">
+                                            <Feedback>
+                                                <ValidationNone>Please a number</ValidationNone>
+                                                <ValidationSuccess>Good number</ValidationSuccess>
+                                                <ValidationError>Mark should be a number!</ValidationError>
+                                            </Feedback>
+                                        </NumericEdit>
+                                    </Field>
+                                </Validation>
+                                 <Validation Validator="@isNumeric">
+                                     <Field>
+                                        <FieldLabel>Pass Mark</FieldLabel>
+                                        <NumericEdit TValue="int?" Placeholder="alloted marks" Min="7" @bind-Value="@model.PassAssessmentMark">
+                                            <Feedback>
+                                                <ValidationNone>Please a number</ValidationNone>
+                                                <ValidationSuccess>Good number</ValidationSuccess>
+                                                <ValidationError>Pass mark is a number!</ValidationError>
+                                            </Feedback>
+                                        </NumericEdit>
+                                    </Field>
+                                 </Validation>  
+                                    
+                            </Fields>
+                        </Validations>
+                        
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button Color="Color.Primary" Clicked="@SaveAssessment">Save</Button>
+                        <Button Color="Color.Secondary" Clicked="@CloseModal">Close</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+}
+
+@code{
+
+    private string selectedAutoCompleteText{ get; set; }
+    private IEnumerable<AssessmentSubject> subjects { get; set; }
+    private List<AssessmentQuestionPool> questionPoolData { get; set; }
+    private AssessmentQuestionPool que = null;
+    private int valueSelected{ get; set; }
+    private List<ObjectiveClass> obList{ get; set; }
+    private ObjectiveClass ob = null;
+
+    private const int MCANS_ANS_ID = 1;  //Lookup Id in the question type table
+    private string selectedListgroupItem{ get; set;}
+    private const string uKey = @"userKey";
+
+    private List<AssessmentQuestionPool> selectedQuestions = new List<AssessmentQuestionPool>();
+
+    private string modalTitleString = string.Empty;
+    private Modal assessmentRef;
+    private List<Training> trainingList;
+    private Validations validations;
+
+    private TrainingAssessment model = new TrainingAssessment();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            subjects = await GetSubjectListAsync();
+            trainingList = await GetTrainingList();
+            await base.OnInitializedAsync();
+        }
+        catch(Exception x)
+        {
+
+        }
+    }
+
+    private async Task<List<Training>> GetTrainingList()
+    {
+        return await tService.GetTrainingsAsync();
+    }
+
+    private async Task changedValueMCANS(int selected)
+    {
+        valueSelected = selected;
+        if (valueSelected > 0)
+        {
+            try
+            {
+                //gets the question type for the grid control
+                var q = await questiontypeService.GetQuestionType(MCANS_ANS_ID);
+                var results = await questionService.GetUnApprovedMCANSAssessmentQuestionPoolAsync(valueSelected);
+                List<AssessmentQuestionPool> lst = new List<AssessmentQuestionPool>();
+
+                if (results != null)
+                {
+                    for(int i = 0; i < results.Count(); i++)
+                    {
+                        if (results.ElementAt(i).QuestionType == q.Id)
+                        {
+                            lst.Add(results.ElementAt(i));
+                        }
+                    }
+
+                    questionPoolData = lst;
+                }
+
+                //objectiveClass list
+                obList = await oService.GetAllObjectiveClassAsync();
+            }
+            catch(Exception x)
+            {
+
+            } 
+        }
+    }
+
+    private async Task<IEnumerable<AssessmentSubject>> GetSubjectListAsync()
+    {
+        return await subjectService.GetAllAssessmentSubjects();
+    }
+
+    private void OnSelectedRowStyling(AssessmentQuestionPool question, DataGridRowStyling styling)
+    {
+        styling.Background = Background.Success;
+    }
+
+    private Task CloseModal()
+    {
+        return assessmentRef.Hide();
+    }
+    private Task ShowModal()
+    {
+        modalTitleString = @"Build Assessment";
+        return assessmentRef.Show();
+    }
+
+    void isNumeric(ValidatorEventArgs e)
+    {
+        int n;
+        try
+        {
+            if (string.IsNullOrEmpty(e.Value.ToString())){ e.Status = ValidationStatus.None; }
+            int.TryParse(e.Value.ToString(), out n);
+
+            if (n > 0){ e.Status = ValidationStatus.Success; }
+        }
+        catch(Exception x)
+        {
+            e.Status = ValidationStatus.Error;
+        }
+
+
+    }
+    async Task SaveAssessment()
+    {
+        //saves the assessment record together with the questions chosen
+        if ((selectedQuestions.Count() > 0) && (trainingList.Count() > 0) && (model.TrainingId > 0) && (model.AssessmentName != string.Empty))
+        //if (await validations.ValidateAll())
+        {
+            try
+            {
+                var usr = await Lstore.GetItemAsync<string>(Storage.userKey);
+                model.CreatedBy = usr;
+                model.CreatedDate = DateTime.Now;
+                model.AuthorizedBy = usr;
+                model.AuthorizedDate = DateTime.Now;
+                model.LastUpdatedBy = usr;
+                model.LastUpdatedDate = DateTime.Now;
+                model.AllotedProratedMark = model.AllotedAssessmentMarks;
+
+                var obj = await tAssessmentService.SaveTrainingAssessment(model);
+                if (obj != null)
+                {
+                    //save the alloted questions
+                    var respCode = await qService.SaveAllotedQuestionsAsync(new Training { Id = (int) model.TrainingId }, obj, selectedQuestions, MCANS_ANS_ID);
+                    if (respCode.Length > 0)
+                    {
+                        await CloseModal();
+                        msg.Info(respCode, @"Create Assessment");
+                        //clear the model
+                        StateHasChanged();
+                    }
+                }
+            }
+            catch(Exception x)
+            {
+                
+            }
+        }
+    }
+    void OnQuestionSelected(ChangeEventArgs e, AssessmentQuestionPool o)
+    {
+        try
+        {
+            ob = null;
+            que = o;
+            if ((bool) e.Value)
+            {
+                try
+                {
+                    if (selectedQuestions.Count() >= 0)
+                    {
+                        //AssessmentQuestionPool obj = selectedQuestions.Contains(que))
+                        if (!selectedQuestions.Contains(que))
+                        {
+                            selectedQuestions.Add(que);
+                        }
+                    }
+                    else
+                    {
+                        selectedQuestions.Add(que);
+                    }
+                }
+                catch(Exception ee)
+                {
+                    selectedQuestions.Add(que);
+                }
+            }
+
+            if (!(bool)e.Value)
+            {
+                que = o;
+                selectedQuestions.Remove(que);
+            }
+        }
+        catch(Exception x)
+        {
+            
+        }
+    }
+
+    private async Task ApproveQuestion(){
+        //approves the selected question
+
+        try
+        {
+            var currentUser = await Lstore.GetItemAsync<string>(uKey);
+            var bln = await questionService.ApproveQuestionAsync(que, currentUser);
+            if (bln)
+            {
+                questionPoolData.Remove(que);
+                que = null;
+                await js.InvokeVoidAsync("showMsg", "Question " + que.Id.ToString() + " approved!!!");
+                StateHasChanged();
+            }
+        }
+        catch(Exception x)
+        {
+            StateHasChanged();
+        }
+    }
+
+    private async Task ApprovedAllQuestions()
+    {
+        //approves all questions
+        try
+        {
+            var currentUser = await Lstore.GetItemAsync<string>(uKey);
+            string returnString = await questionService.ApproveAllQuestionsAsync(questionPoolData, currentUser);
+            if (returnString != string.Empty)
+            {
+                questionPoolData.Clear();
+                await js.InvokeVoidAsync("showMsg", "All Questions approved");
+                StateHasChanged();
+            }
+        }
+        catch(Exception ex){
+            StateHasChanged();
+        }
+    }
+
+}

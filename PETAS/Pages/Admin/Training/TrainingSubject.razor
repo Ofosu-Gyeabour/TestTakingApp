@@ -1,0 +1,122 @@
+﻿@inject IAssessmentSubjectService assessmentService
+
+<TitleComponent Title="Subject: a theme around which a training and assessment is organized in PASL" />
+
+@if (subjectList == null)
+{
+    <div class="spinner">Loading Subject data...</div>
+}
+else
+{
+    <Row>
+        <Column ColumnSize="ColumnSize.Is6">
+            <TitleComponent Title="Enter Subject" />
+            <Alert Color="Color.Primary" Visible="true">
+                <Validations @ref="validations" Mode="ValidationMode.Manual" Model="oAssessment">
+                    <Validation Validator="@ValidationRule.IsNotEmpty">
+                        <Field>
+                            <Addons>
+                                <TextEdit Placeholder="enter subject name" @bind-Text="oAssessment.SubjectName" />
+                            </Addons>
+                        </Field> 
+
+                    </Validation>
+                </Validations>
+                <Button Color="Color.Primary" Block Clicked="OnSaveAssessmentSubject">Save Subject</Button>
+                 <Button Color="Color.Primary" Block Clicked="OnDeleteAssessmentSubject">Delete Subject</Button>
+            </Alert>
+        </Column>
+
+        <Column ColumnSize="ColumnSize.Is6">
+            <TitleComponent Title="Subject List" />
+            <Alert Color="Color.Primary" Visible="true">
+                <DataGrid TItem="AssessmentSubject" Data="@subjectList"
+                @bind-SelectedRow="oAssessment" 
+                Responsive 
+                Hoverable = "true"
+                Striped = "true"
+                Narrow = "true"
+                Bordered="true"
+                
+                SelectedRowStyling="@OnSelectedRowStyling"
+                Virtualize 
+                VirtualizeOptions="@(new() { DataGridHeight = "250px"})">
+                    <DataGridCommandColumn TItem="AssessmentSubject" />
+                    <DataGridColumn TItem="AssessmentSubject" Field="@nameof(AssessmentSubject.Id)" Caption="#" Sortable="false" />
+                    <DataGridColumn TItem="AssessmentSubject" Field="@nameof(AssessmentSubject.SubjectName)" Caption="Subject Name" Sortable="false" />
+                </DataGrid>
+            </Alert>
+        </Column>
+    </Row>
+}
+
+@code{
+    private IEnumerable<AssessmentSubject> subjectList;
+    private AssessmentSubject oAssessment = new AssessmentSubject();
+    private Validations validations;
+    private bool loaded;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //loads subject list 
+        await GetSubjectData();
+        await base.OnInitializedAsync();
+    }
+
+    private async Task GetSubjectData()
+    {
+        this.subjectList = await assessmentService.GetAllAssessmentSubjects();
+        if (subjectList != null)
+        {
+            loaded = true;
+        }
+    }
+
+    private async Task OnSaveAssessmentSubject()
+    {
+        if (await validations.ValidateAll())
+        {
+            this.subjectList = null;
+
+            var result = await assessmentService.SaveSubject(oAssessment);
+            if (result != null)
+            {
+                await GetSubjectData();
+                StateHasChanged();
+                Thread.Sleep(1000);
+                await ClearFields();
+            }
+        }
+
+    }
+
+    private async Task OnDeleteAssessmentSubject()
+    {
+        //if validations pass, use service object to send request to API for deletion of record
+        if (await validations.ValidateAll())
+        {
+            var bln = await assessmentService.DeleteSubject(oAssessment);
+            if (bln)
+            {
+                subjectList = null;
+                await GetSubjectData();
+                Thread.Sleep(1000);
+                await ClearFields();
+            }
+        }
+    }
+
+    Task ClearFields()
+    {
+        oAssessment.Id = 0;
+        oAssessment.SubjectName = string.Empty;
+
+        return Task.CompletedTask;
+    }
+
+    private void OnSelectedRowStyling(AssessmentSubject subject, DataGridRowStyling styling)
+    {
+        styling.Background = Background.Success;
+    }
+
+}

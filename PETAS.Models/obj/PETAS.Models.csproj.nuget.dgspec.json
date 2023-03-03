@@ -1,0 +1,76 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\Blessings\\Documents\\Projects\\PASL\\Apps\\PANTrainer\\PETAS.Models\\PETAS.Models.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\Blessings\\Documents\\Projects\\PASL\\Apps\\PANTrainer\\PETAS.Models\\PETAS.Models.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Blessings\\Documents\\Projects\\PASL\\Apps\\PANTrainer\\PETAS.Models\\PETAS.Models.csproj",
+        "projectName": "PETAS.Models",
+        "projectPath": "C:\\Users\\Blessings\\Documents\\Projects\\PASL\\Apps\\PANTrainer\\PETAS.Models\\PETAS.Models.csproj",
+        "packagesPath": "C:\\Users\\Blessings\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Blessings\\Documents\\Projects\\PASL\\Apps\\PANTrainer\\PETAS.Models\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Blessings\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "ExcelDataReader": {
+              "target": "Package",
+              "version": "[3.7.0-develop00310, )"
+            },
+            "ExcelDataReader.DataSet": {
+              "target": "Package",
+              "version": "[3.7.0-develop00310, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[6.0.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

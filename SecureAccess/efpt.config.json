@@ -1,0 +1,594 @@
+﻿{
+   "CodeGenerationMode": 2,
+   "ContextClassName": "SecureaccessContext",
+   "ContextNamespace": "Data",
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": "Models",
+   "OutputContextPath": "Data",
+   "OutputPath": "Models",
+   "ProjectRootNamespace": "SecureAccess",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 0,
+   "Tables": [
+      {
+         "Name": "[dbo].[AR_LiveSession]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AR_Log]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AR_Object]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AR_ObjectType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AR_PropertyValue]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AR_Reference]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AR_Relationship]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AR_RelationshipAll]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AR_RelationshipType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AR_User]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AR_UserLog]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[View_AR_AllApplicationParts]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_AllApplicationProtectedAreas]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_AllApplications]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_AllOrgUnits]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_AllOwners]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_AllRoles]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_AllUserGroups]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_AllUsers]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_Application_List]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_LiveSession]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_Log]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_Log_Joined]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_Object]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_Object_Joined]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_Object_Properties]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_Object_Valid]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_ObjectType]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_ObjectUser_Joined]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_OrgUnit_Joined]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_PermissionMatrix]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_Property]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_Property_Joined]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_PropertyType]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_PropertyValue]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_PropertyValue_Joined]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_PropertyValue_Joined_Matrix]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_Relationship]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_Relationship_Child_Joined]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_Relationship_Child_Valid]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_Relationship_Joined]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_Relationship_Parent_Joined]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_Relationship_Parent_Valid]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_Relationship_Valid]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_RelationshipAll]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_RelationshipAll_Child]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_RelationshipAll_Child_Valid]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_RelationshipAll_Parent]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_RelationshipAll_Parent_Valid]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_RelationshipAll_Valid]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_RelationshipType]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_Role_List]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_RoleMatrix]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_User]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_User_Joined]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_User_List]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_User_Unverified]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[View_AR_UserGroup_List]",
+         "ObjectType": 3
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Application_SelectApplicationParts]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Application_SelectApplicationProtectedAreas]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Application_SelectRoles]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_ApplicationPart_SelectApplicationParts]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Authenticate]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_GetCatalogVersion]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_IsAuthorized]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_LiveSession_Clear]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_LiveSession_Delete]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_LiveSession_DeleteSpecific]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_LiveSession_Insert]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_LiveSession_Select]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_LiveSession_Update]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Log_Delete]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Log_Delete_All]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Log_Insert]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Log_Select]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Log_Update]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Object_Delete]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Object_Delete_Transitions]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Object_GetProperties]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Object_Insert]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Object_Select]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Object_SelectApplicationParts]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Object_SelectApplicationProtectedAreas]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Object_SelectApplications]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Object_SelectByPropertyValue]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Object_SelectChildOrgUnits]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Object_SelectCountByObjectType]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Object_SelectEffectivePermissionMatrix]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Object_SelectEffectivePermissions]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Object_SelectEffectiveRoles]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Object_SelectEffectiveRolesMatrix]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Object_SelectNestingApplicationParts]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Object_SelectPermissionMatrix]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Object_Update]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Object_Valid_Select]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_ObjectType_Delete]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_ObjectType_Insert]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_ObjectType_Select]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_ObjectType_Update]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_ObjectUser_Search]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_PropertyValue_Delete]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_PropertyValue_Insert]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_PropertyValue_Select]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_PropertyValue_Update]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_RecountEveryMembershipAll]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_RecountObjectMembershipAll]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_RecountOneRelationship]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Relationship_Delete]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Relationship_GetReflexiveRelationships]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Relationship_Insert]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Relationship_InsertIntoRelationshipAll]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Relationship_Select]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Relationship_Update]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_Relationship_Valid_Select]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_RelationshipAll_Select]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_RelationshipAll_Valid_Select]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_RelationshipType_Delete]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_RelationshipType_Insert]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_RelationshipType_Select]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_RelationshipType_Update]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_User_Delete_UnVerified]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_User_Insert]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_User_InsertShort]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_User_IsAuthorized]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_User_List]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_User_Select]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_User_Select_UnVerified]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_User_SelectByEmailAddress]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_User_SelectByLoginName]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_User_Update]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_User_UpdateShort]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_AR_UserGroup_List]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Proc_GetUserName]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[DateTimeMax]",
+         "ObjectType": 2
+      },
+      {
+         "Name": "[dbo].[DateTimeMin]",
+         "ObjectType": 2
+      },
+      {
+         "Name": "[dbo].[GetFullName]",
+         "ObjectType": 2
+      },
+      {
+         "Name": "[dbo].[GetParentFromTransitivePath]",
+         "ObjectType": 2
+      },
+      {
+         "Name": "[dbo].[GetUserAppAccess]",
+         "ObjectType": 2
+      },
+      {
+         "Name": "[dbo].[GetUserName]",
+         "ObjectType": 2
+      },
+      {
+         "Name": "[dbo].[ProperCase]",
+         "ObjectType": 2
+      }
+   ],
+   "UiHint": "EMGH-HQ-DB-01.SecureAccess",
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDbContextSplitting": false,
+   "UseFluentApiOnly": false,
+   "UseHandleBars": false,
+   "UseInflector": true,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoConstructor": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UseSchemaFolders": false,
+   "UseSpatial": false
+}

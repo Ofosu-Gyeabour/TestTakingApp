@@ -1,0 +1,31 @@
+﻿@page "/admin/training/resourcetypes"
+@using PETAS.Pages.Components
+
+<Accordion>
+    <Collapse Visible="@collapse1Visible">
+        <CollapseHeader>
+            <Heading Size="HeadingSize.Is5">
+                <Button Clicked="@(()=>collapse1Visible = !collapse1Visible)">Click for PDF Upload</Button>
+            </Heading>
+        </CollapseHeader>
+        <CollapseBody>
+            <PDFUploadComponent />
+        </CollapseBody>
+    </Collapse>
+    <Collapse Visible="@collapse2Visible">
+        <CollapseHeader>
+            <Heading Size="HeadingSize.Is5">
+                <Button Clicked="@(()=>collapse2Visible = !collapse2Visible)">Click to view resource library</Button>
+            </Heading>
+        </CollapseHeader>
+        <CollapseBody>
+            <ResourceLibrary />
+        </CollapseBody>
+    </Collapse>
+</Accordion>
+
+@code{
+    bool collapse1Visible = true;
+    bool collapse2Visible = false;
+    bool collapse3Visible = false;
+}

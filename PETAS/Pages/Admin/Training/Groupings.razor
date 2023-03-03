@@ -1,0 +1,171 @@
+﻿@inject HttpClient http
+@inject INotificationService notifier
+@inject IGroupService groupService
+@inject ITrainingDomainService domainService
+
+
+@if(_groupList == null)
+{
+    <div class="spinner">Loading...</div>
+}
+else
+{
+    <TitleComponent Title="List of Training Groups" />
+    <Row>
+        <Column ColumnSize="ColumnSize.Is6">
+            <TitleComponent Title="Training Group" />
+            <Alert Color="Color.Primary" Visible="true">
+                <Validations @ref="validations" Mode="ValidationMode.Manual" Model="@objTrainingGroup">
+                    <Validation Validator="@ValidationRule.IsNotEmpty">
+                        
+                        <Field>
+                            <FieldLabel>Group Name</FieldLabel>
+                            <Addons>
+                                <TextEdit Placeholder="Name of Group" @bind-Text="@objTrainingGroup.GroupName" />
+                            </Addons>
+
+                            <FieldLabel>Description</FieldLabel>
+                            <Addons>
+                                <TextEdit Placeholder="Group Description" @bind-Text="@objTrainingGroup.GroupDescription" />
+                            </Addons>
+                        </Field> 
+                        
+                        <FieldLabel>Domain</FieldLabel>
+                        <Autocomplete TItem = "PETAS.Models.Domain.TrainingDomain"
+                            TValue="string"
+                            Data = "@_domainList"
+                            TextField="@(( item ) => item.DomainName)"
+                            ValueField="@(( item ) => item.Id.ToString())"
+                            Placeholder="Type to search for domain..."
+                            Filter="AutocompleteFilter.StartsWith"
+                            FreeTyping
+                            CustomFilter="@(( item, searchValue ) => item.DomainName.IndexOf( searchValue, 0, StringComparison.CurrentCultureIgnoreCase ) >= 0 )">
+                        </Autocomplete>
+
+                    </Validation>
+                </Validations>
+                <Button Color="Color.Primary" Block Clicked="@OnCommitRecord">Save Training Group</Button>
+            </Alert>
+        </Column>
+
+        <Column ColumnSize="ColumnSize.Is6">
+            <TitleComponent Title="Training Group List" />
+            <Alert Color="Color.Primary" Visible="true">
+                <Table Narrow="true" Bordered="true" Hoverable="true" ResizeMode="TableResizeMode.Columns" Responsive="true" Striped="true">
+                    <TableHeader ThemeContrast="ThemeContrast.Dark">
+                        <TableRow>
+                            <TableHeaderCell>#</TableHeaderCell>
+                            <TableHeaderCell>GroupName</TableHeaderCell>
+                            <TableHeaderCell>Domain</TableHeaderCell>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        @foreach(var item in _groupList)
+                        {
+                            <TableRow>
+                                <TableRowCell>@item.Id.ToString()</TableRowCell>
+                                <TableRowCell>@item.GroupName</TableRowCell>
+                                <TableRowCell>@item.Domain.DomainName</TableRowCell>
+                            </TableRow>
+                        }
+                    </TableBody>
+                </Table>
+            </Alert>
+        </Column>
+        
+    </Row>
+}
+
+
+@code
+{
+    private IEnumerable<TrainingGrouping> _groupList = new List<TrainingGrouping>();
+    private IEnumerable<PETAS.Models.Domain.TrainingDomain> _domainList = new List<PETAS.Models.Domain.TrainingDomain>();
+    private TrainingGrouping objTrainingGroup = new TrainingGrouping();
+    private TrainingDomain objTrainingDomain = new TrainingDomain();
+
+    private Validations? validations;
+    private int indexSelected;
+    private string selectedItem = "first";
+    //private TrainingDomain selectedItem = new TrainingDomain();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetDomainData();
+        await GetGroupInfo();
+        await base.OnInitializedAsync();
+    }
+
+    private async Task GetDomainData()
+    {
+        _domainList = await domainService.GetTrainingDomains();
+    }
+
+    private async Task GetGroupInfo()
+    {
+        _groupList = await groupService.GetAllGroups();
+    }
+
+    private async Task OnCommitRecord()
+    {
+        try
+        {
+            if (await validations.ValidateAll())
+            {
+                int domID = await domainService.getDomainID(selectedItem);
+                objTrainingGroup.DomainId = domID;
+
+                var result = await CreateGroupRecord(objTrainingGroup);
+
+                if (result != null)
+                {
+                    _groupList = null;
+                    _domainList = null;
+                    StateHasChanged();
+                    await GetGroupInfo();
+                    await GetDomainData();
+                    await ClearFields();
+                }
+            }
+        }
+        catch (Exception)
+        {
+
+        }
+    }
+
+    Task ClearFields()
+    {
+        objTrainingGroup.Id = 0;
+        objTrainingGroup.GroupName = string.Empty;
+        objTrainingGroup.GroupDescription = string.Empty;
+
+        return Task.CompletedTask;
+    }
+
+    private async Task<TrainingGrouping> CreateGroupRecord(TrainingGrouping model)
+    {
+        return await groupService.CreateGroup(model);
+    }
+
+    Task OnSelectedItemChanged(int value)
+    {
+        indexSelected = value;
+        return Task.CompletedTask;
+    }
+
+    private async Task loadDomainSet()
+    {
+        //gets the details of domain and populates the select control
+        try
+        {
+            await GetDomainData();
+        }
+        catch (Exception)
+        {
+
+        }
+    }
+
+}

@@ -1,0 +1,107 @@
+﻿{
+   "CodeGenerationMode": 2,
+   "ContextClassName": "PantrainerContext",
+   "ContextNamespace": "Data",
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": "Models",
+   "OutputContextPath": "Data",
+   "OutputPath": "Models",
+   "ProjectRootNamespace": "PETAS.Data",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 0,
+   "Tables": [
+      {
+         "Name": "[dbo].[AdmList]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AssessmentQuestionPool]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AssessmentSubject]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AssignedTraining]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[CertificationAwarder]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ObjectiveClass]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[QAlloted]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[QuestionType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[StaffQuestionAssessment]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Training]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TrainingAssessment]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TrainingCertification]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TrainingDomain]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TrainingGrouping]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TrainingResource]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TrainingResourceType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TrainingStatusType]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TrainingType]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": "DESKTOP-9EO1DVH\\CONNECT.PANTrainer",
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDbContextSplitting": false,
+   "UseFluentApiOnly": false,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": true,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoConstructor": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UseSchemaFolders": false,
+   "UseSpatial": false
+}

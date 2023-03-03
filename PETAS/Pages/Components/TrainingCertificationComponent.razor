@@ -1,0 +1,235 @@
+﻿@inject ICertificationAwardService certificationService
+@inject Blazored.LocalStorage.ILocalStorageService localStore
+@inject ITrainingCertificationService trainingService
+
+@if(trainCerts == null)
+{
+    <div class="spinner">Loading...</div>
+}
+else
+{
+<Row>
+    <Column ColumnSize="ColumnSize.Is6">
+        <TitleComponent Title="Create Certification" />
+        <Alert Color="Color.Primary" Visible="true">
+            <Fields>
+                <Validations @ref="validations" Mode="ValidationMode.Manual" Model="@model">
+                <Validation Validator="ValidationRule.IsNotEmpty">
+                    <Field>
+                        <FieldLabel>Certification</FieldLabel>
+                        <Addons>
+                            <Addon AddonType="AddonType.Start">#</Addon>
+                            <Addon AddonType="AddonType.Body">
+                                <TextEdit Placeholder="enter certification name" @bind-Text="@model.CertificationName">
+                                    <Feedback>
+                                        <ValidationError>enter valid certification</ValidationError>
+                                    </Feedback>
+                                </TextEdit>
+                            </Addon>
+                            <Addon AddonType="AddonType.Start">#</Addon>
+                        </Addons>
+                    </Field>
+                </Validation>
+                <Validation Validator="ValidationRule.IsNotEmpty">
+                    <Field ColumnSize="ColumnSize.Is12">
+                        <FieldLabel>Certification Body</FieldLabel>
+                        <Addons>
+                            <Addon AddonType="AddonType.Start">@@</Addon>
+                                <Addon AddonType="AddonType.Body">
+                                    <ListGroup Mode="ListGroupMode.Selectable" @bind-SelectedItem="selectedString">
+                                        @foreach(var c in certificationAwardList)
+                                        {
+                                            <ListGroupItem Name="@c.Awarder" id="@c.Id" @onclick="eventArgs=>{ListGroupClick(eventArgs,c);}">@c.Awarder</ListGroupItem>
+                                        }
+                                    </ListGroup>
+                                </Addon>
+                            
+                                <Addon AddonType="AddonType.End">@@</Addon>
+                        </Addons>
+                    </Field>
+                </Validation>
+                <Validation Validator="ValidationRule.IsNotEmpty">
+                    <Field>
+                        <FieldLabel>Certification Year</FieldLabel>
+                        <Addons>
+                            <Addon AddonType="AddonType.Start">#</Addon>
+                            <Addon AddonType="AddonType.Body">
+                                <NumericEdit TValue="int?" Min="2022" Max="2023" Placeholder="year of certification" @bind-Value="@model.CertifiedYear">
+                                    <Feedback>
+                                        <ValidationError>Please enter a valid year</ValidationError>
+                                    </Feedback>
+                                </NumericEdit>
+                            </Addon>
+                            <Addon AddonType="AddonType.End">#</Addon>
+                        </Addons>
+                    </Field>
+                </Validation>
+                </Validations>
+            </Fields>
+
+                <Button Color="Color.Primary" Block Clicked="@OnTrainingCertificationSaved">Save Training Certification</Button>
+        </Alert>
+    </Column>
+    <Column ColumnSize="ColumnSize.Is6">
+        <TitleComponent Title="Create Certification" />
+        <Alert Color="Color.Primary" Visible="true">
+            <Table Striped="true" Hoverable="true" Responsive="true">
+                <TableHeader>
+                    <TableRow>
+                        @*<TableHeaderCell>#</TableHeaderCell>*@
+                        <TableHeaderCell>Awarder</TableHeaderCell>
+                        <TableHeaderCell>Period</TableHeaderCell>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    <TableRow>
+                            @foreach(var tr in trainCerts)
+                            {
+                                @*<TableRowCell><Check TValue="int" Checked="0" @onclick="eventArgs => {OnTableRowClick(eventArgs,tr);}">@tr.Id</Check></TableRowCell>*@
+                                <TableRowCell @onclick="eventArgs => {OnTableRowClick(eventArgs,tr);}">@tr.CertificationAwarded.Awarder</TableRowCell>
+                                <TableRowCell @onclick="eventArgs => {OnTableRowClick(eventArgs,tr);}">@tr.CertifiedYear</TableRowCell>
+                            }
+                        </TableRow>
+                </TableBody>
+            </Table>
+                
+            </Alert>
+    </Column>
+</Row>
+}
+
+@code{
+    private List<CertificationAwarder> certificationAwardList = new List<CertificationAwarder>();
+    private CertificationAwarder objCertificationAwarder = new CertificationAwarder();
+    private Validations validations = new Validations();
+    private TrainingCertification model = new TrainingCertification();
+    private List<TrainingCertification> trainCerts = new List<TrainingCertification>();
+
+    private const string userKey = @"userKey";
+    private int selectedID;
+    private string selectedString{get;set;} = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        trainCerts = await getTrainingCeritificationListAsync();
+        certificationAwardList = await GetTrainingCertifications();
+        await base.OnInitializedAsync();
+    }
+
+    void OnTableRowClick(EventArgs e, object obj)
+    {
+        try
+        {
+            var _value = (TrainingCertification)obj;
+            selectedString = _value.CertificationAwarded.Awarder;
+            selectedID = _value.Id;
+
+            model.Id = _value.Id;
+            model.CertificationName = _value.CertificationName;
+            model.CertificationAwarded = _value.CertificationAwarded;
+            model.CertificationAwarded.Awarder = selectedString;
+            model.CertificationAwardedId = _value.CertificationAwardedId;
+            model.CertifiedYear = _value.CertifiedYear;
+            model.CreatedBy = _value.CreatedBy;
+            model.CreatedDate = _value.CreatedDate;
+        }
+        catch(Exception xx)
+        {
+            throw xx;
+        }
+    }
+
+    void ListGroupClick(EventArgs e, object obj)
+    {
+        var _value = (CertificationAwarder)obj;
+        selectedID = _value.Id;
+        selectedString = _value.Awarder;
+    }
+
+    private async Task<List<CertificationAwarder>> GetTrainingCertifications()
+    {
+        try
+        {
+            var _data = new List<CertificationAwarder>();
+            var results = await certificationService.GetCertificationAwarders();
+            if (results != null)
+            {
+                for(int i = 0; i < results.Count(); i++)
+                {
+                    _data.Add(results.ElementAt(i));
+                }
+            }
+
+            return _data;
+        }
+        catch(Exception x)
+        {
+            throw x;
+        }
+    }
+
+    private async Task<List<TrainingCertification>> getTrainingCeritificationListAsync()
+    {
+        try
+        {
+            var result = new List<TrainingCertification>();
+            var _data = await trainingService.GetTrainingCertificationsAsync();
+            if (_data != null)
+            {
+                for(int i = 0; i < _data.Count(); i++)
+                {
+                    result.Add(_data.ElementAt(i));
+                }
+            }
+
+            return result;
+        }
+        catch(Exception err){
+            throw err;
+        }
+    }
+
+    private Task ClearFormFields()
+    {
+        model.Id = 0;
+        model.CertificationAwardedId = 0;
+        model.CreatedBy = string.Empty;
+        model.CertificationName = string.Empty;
+
+        selectedID = 0;
+        selectedString = string.Empty;
+
+        return Task.CompletedTask;
+    }
+
+    private async Task OnTrainingCertificationSaved()
+    {
+        try
+        {
+            if ((model.CertificationName != string.Empty) && (selectedID > 0) && (model.CertifiedYear > 0))
+            {
+                    model.CertificationAwardedId = selectedID;
+                    model.CreatedDate = DateTime.Now;
+                    model.CreatedBy = await localStore.GetItemAsync<string>(userKey);
+
+                    var bln = await trainingService.SaveTrainingCertificationAsync(model);
+                    if (bln)
+                    {
+                        trainCerts = null;
+                        StateHasChanged();
+                        await ClearFormFields();
+                        await getTrainingCeritificationListAsync();
+                    }
+            }
+        }
+        catch(Exception xx)
+        {
+            throw xx;
+        }
+    }
+
+    private void OnSelectedRowStyling(TrainingCertification trainingCertification, DataGridRowStyling styling)
+    {
+        styling.Background = Background.Success;
+    }
+}

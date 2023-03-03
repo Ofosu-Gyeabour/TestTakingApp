@@ -1,0 +1,125 @@
+﻿@inject IUserAccountService auth
+@inject NavigationManager navMgr
+
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">PETAS</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="dashboard/" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> DashBoard
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" @onclick="()=>expandFirstSubMenu= !expandFirstSubMenu">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Training Setup
+            </NavLink>
+            @if (expandFirstSubMenu)
+            {
+                <ul class="nav flex-column">
+
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" href="admin/training/configuration">
+                            <span class="oi oi-fork" aria-hidden="true"></span> Configuration
+                        </NavLink>
+                    </li>
+
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" href="admin/training/trainingpartners">
+                            <span class="oi oi-people" aria-hidden="true"></span> Training Partners
+                        </NavLink>
+                    </li>
+                </ul>  
+            }
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" @onclick="()=>expandSecondSubMenu= !expandSecondSubMenu">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Training Center
+            </NavLink>
+            @if (expandSecondSubMenu)
+            {
+                <ul class="nav flex-column">
+
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" href="admin/training/questionpool">
+                            <span class="oi oi-fork" aria-hidden="true"></span> Question Pool
+                        </NavLink>
+                    </li>
+
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" href="admin/training/resourcetypes">
+                            <span class="oi oi-share" aria-hidden="true"></span> Resource
+                        </NavLink>
+                    </li>
+
+                </ul>  
+            }
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" @onclick="()=>expandThirdSubMenu= !expandThirdSubMenu">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Assessment
+            </NavLink>
+            @if (expandThirdSubMenu)
+            {
+                <ul class="nav flex-column">
+
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" href="admin/training/createtraining">
+                            <span class="oi oi-fork" aria-hidden="true"></span> Create Training
+                        </NavLink>
+                    </li>
+
+                    <li class="nav-item px-3">
+                        <NavLink class="nav-link" href="admin/training/assigntraining">
+                            <span class="oi oi-share" aria-hidden="true"></span> Assign Training
+                        </NavLink>
+                    </li>
+
+                </ul>  
+            }
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" @onclick="@Logout">
+                <span class="oi oi-fullscreen-exit" aria-hidden="true"></span> Exit
+            </NavLink>
+        </div>
+
+    </nav>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+    private bool expandFirstSubMenu;
+    private bool expandSecondSubMenu;
+    private bool expandThirdSubMenu;
+    private string userKey = @"userKey";
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    private async Task Logout()
+    {
+        //task handles the logging out of a user
+        //clear the local storage as well
+        var bln = await auth.Logout();
+        if (bln)
+        {
+            navMgr.NavigateTo("/");
+        }
+    }
+}

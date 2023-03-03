@@ -1,0 +1,346 @@
+﻿@inject ITrainingTypeService tService
+@inject IGroupService _grouping
+@inject ITrainingCertificationService _trainCertificationService
+
+@inject ITrainingService trainingService
+@inject Blazored.LocalStorage.ILocalStorageService storage
+
+@if((trainingTypes.Count() == 0) || (groups.Count() == 0) || (certifications.Count() == 0) || (trainingList.Count() == 0))
+{
+    <div class="container"><em>Loading...</em></div>
+}
+else
+{
+    <Row>
+    <Column ColumnSize="ColumnSize.Is5">
+        <TitleComponent Title="Training Details" />
+        <Alert Color="Color.Primary" Visible="true">
+                <Validation Validator="@ValidationRule.IsNotEmpty">
+                    <Field>
+                        <Addons>
+                            <Addon AddonType="AddonType.Start">@@</Addon>
+                            <Addon AddonType="AddonType.Body">
+                                <TextEdit Placeholder="enter name of training" @bind-Text="@model.TrainingName" />
+                            </Addon>
+                            <Addon AddonType="AddonType.End">@@</Addon>
+                        </Addons>
+                    </Field>
+                </Validation>
+                    
+                <Validation Validator="@ValidationRule.IsNotEmpty">
+                    <Field>
+                        <Addons>
+                                <Addon AddonType="AddonType.Start">@@</Addon>
+                                <Addon AddonType="AddonType.Body">
+                                    <Autocomplete TItem="TrainingType"
+                                                TValue="int"
+                                                Data="@trainingTypes"
+                                                TextField="@(( item ) => item.Status)"
+                                                ValueField="@(( item ) => item.Id)"
+                                                @bind-SelectedValue="selectedID"
+                                                @bind-SelectedText="selectedAutoCompleteText"
+                                                Placeholder="Select Training Type"
+                                                Filter="AutocompleteFilter.StartsWith"
+                                                FreeTyping
+                                                CustomFilter="@(( item, searchValue ) => item.Status.IndexOf( searchValue, 0, StringComparison.CurrentCultureIgnoreCase ) >= 0 )">
+                                        <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
+                                    </Autocomplete>
+                                </Addon>
+                            
+                                <Addon AddonType="AddonType.End">@@</Addon>
+                        </Addons>
+                    </Field>
+                </Validation>
+                    
+                <Validation Validator="@ValidationRule.IsNotEmpty">
+                    <Field>
+                        <Addons>
+                            <Addon AddonType="AddonType.Start">@@</Addon>
+                            <Addon AddonType="AddonType.Body">
+                                <Autocomplete TItem="TrainingGrouping"
+                                                TValue="int"
+                                                Data="@groups"
+                                                TextField="@(( item ) => item.GroupName)"
+                                                ValueField="@(( item ) => item.Id)"
+                                                @bind-SelectedValue="groupingID"
+                                                @bind-SelectedText="groupText"
+                                                Placeholder="Select Training Group"
+                                                Filter="AutocompleteFilter.StartsWith"
+                                                FreeTyping
+                                                CustomFilter="@(( item, searchValue ) => item.GroupName.IndexOf( searchValue, 0, StringComparison.CurrentCultureIgnoreCase ) >= 0 )">
+                                        <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
+                                    </Autocomplete>
+                            </Addon>
+                            <Addon AddonType="AddonType.End">@@</Addon>
+                        </Addons>
+                    </Field>
+                </Validation>
+                    
+                <Validation Validator="@ValidationRule.IsNotEmpty">
+                    <Field>
+                        <Addons>
+                            <Addon AddonType="AddonType.Start">@@</Addon>
+                            <Addon AddonType="AddonType.Body">
+                                <Autocomplete TItem="TrainingCertification"
+                                                TValue="int"
+                                                Data="@certifications"
+                                                TextField="@(( item ) => item.CertificationName)"
+                                                ValueField="@(( item ) => item.Id)"
+                                                @bind-SelectedValue="trainCertID"
+                                                @bind-SelectedText="trainCertText"
+                                                Placeholder="Select Certification"
+                                                Filter="AutocompleteFilter.StartsWith"
+                                                FreeTyping
+                                                CustomFilter="@(( item, searchValue ) => item.CertificationName.IndexOf( searchValue, 0, StringComparison.CurrentCultureIgnoreCase ) >= 0 )">
+                                        <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
+                                    </Autocomplete>
+                            </Addon>
+                            <Addon AddonType="AddonType.End">@@</Addon>
+                        </Addons>
+                    </Field>
+                </Validation>
+                    
+
+                    <Field>
+                        <Addons>
+                            <Addon AddonType="AddonType.Start">@@</Addon>
+                            <Addon AddonType="AddonType.Body">
+                                <NumericEdit TValue="int?" Placeholder="input mark to pass Training" ValueChanged="@OnNumberChanged" />
+                            </Addon>
+                            <Addon AddonType="AddonType.End">@@</Addon>
+                        </Addons>
+                    </Field>
+
+
+                    <Field>
+                        <Addons>
+                            <Addon AddonType="AddonType.Start">@@</Addon>
+                            <Addon AddonType="AddonType.Body">
+                                <DateEdit TValue="DateTime?" Date="@dtFrom" DateChanged="@OnDtFromChanged" />
+                            </Addon>
+                            <Addon AddonType="AddonType.End">@@</Addon>
+                        </Addons>
+                    </Field>
+
+
+                    <Field>
+                        <Addons>
+                            <Addon AddonType="AddonType.Start">@@</Addon>
+                            <Addon AddonType="AddonType.Body">
+                                <DateEdit TValue="DateTime?" Date="@dtTo" DateChanged="@OnDtToChanged" />
+                            </Addon>
+                            <Addon AddonType="AddonType.End">@@</Addon>
+                        </Addons>
+                    </Field>
+
+            <Button Color="Color.Primary" Clicked="@OnSaveTrainingRecord">Save Training</Button>
+            </Alert>
+    </Column>
+    <Column ColumnSize="ColumnSize.Is7">
+        <TitleComponent Title="Training Records" />
+        <Alert Color="Color.Primary" Visible="true">
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHeaderCell>#</TableHeaderCell>
+                        <TableHeaderCell>Type</TableHeaderCell>
+                        <TableHeaderCell>Status</TableHeaderCell>
+                        <TableHeaderCell>Group</TableHeaderCell>
+                        <TableHeaderCell>Certificate</TableHeaderCell>
+                        <TableHeaderCell>Pass Mark</TableHeaderCell>
+                    </TableRow>
+                </TableHeader>
+
+                <TableBody>
+                    @foreach(var item in trainingList)
+                    {
+                        <TableRow>
+                            <TableRowCell>@item.Id.ToString()</TableRowCell>
+                            <TableRowCell>@item.TrainingTypeNavigation.Status</TableRowCell>
+                            <TableRowCell>@item.TrainingStatus.TrainingTypeStatus</TableRowCell>
+                            <TableRowCell>@item.TrainingGroup.GroupName</TableRowCell>
+                            <TableRowCell>@item.TrainingCertification.CertificationName</TableRowCell>
+                            <TableRowCell>@item.MarkToPass.ToString()</TableRowCell>
+                        </TableRow>
+                    }
+                </TableBody>
+            </Table>
+        </Alert>
+    </Column>
+</Row>
+}
+
+
+@code{
+    private List<Training> trainingList = new List<Training>();
+    private Training trainingRecord = new Training();
+
+    private List<TrainingType> trainingTypes = new List<TrainingType>();
+    private List<TrainingGrouping> groups = new List<TrainingGrouping>();
+    private List<TrainingCertification> certifications = new List<TrainingCertification>();
+
+    private Validations validations = new Validations();
+    private Training model = new Training();
+    private int selectedID;
+
+    private int groupingID;
+    private string groupText;
+
+    private int trainCertID;
+    private string trainCertText;
+
+    private string selectedAutoCompleteText;
+    private string key = @"userKey";
+
+    private DateTime? dtFrom;
+    private DateTime? dtTo;
+
+    private int? markToPass{get;set;}
+
+    protected override async Task OnInitializedAsync()
+    {
+        trainingList = await GetTrainingsAsync();
+        trainingTypes = await GetTrainingTypes();
+        groups = await GetTrainingGroups();
+        certifications = await GetCertifications();
+
+        dtFrom = DateTime.Now;
+        dtTo = DateTime.Now;
+        await base.OnInitializedAsync();
+        StateHasChanged();
+
+    }
+
+    #region Private
+
+    private async Task<List<Training>> GetTrainingsAsync()
+    {
+        return await trainingService.GetTrainingsAsync();
+    }
+
+    void OnDtFromChanged(DateTime? date)
+    {
+        dtFrom = date;
+    }
+
+    void OnDtToChanged(DateTime? date)
+    {
+        dtTo = date;
+
+    }
+
+    void OnNumberChanged(int? nom)
+    {
+        markToPass = nom;
+    }
+    void ValidateNumber(ValidatorEventArgs e)
+    {
+        try
+        {
+            if ((int)e.Value <= 0)
+            {
+                e.Status = ValidationStatus.Error;
+                return;
+            }
+
+            if (Int32.TryParse(e.Value.ToString(),out int num))
+            {
+                e.Status = ValidationStatus.Success;
+            }
+        }
+        catch(Exception x)
+        {
+            e.Status = ValidationStatus.Error;
+        }
+    }
+
+    private async Task<List<TrainingType>> GetTrainingTypes()
+    {
+        return await tService.GetTrainingTypesAsync();
+    }
+
+    private async Task<List<TrainingGrouping>> GetTrainingGroups()
+    {
+        List<TrainingGrouping> dict = new List<TrainingGrouping>();
+
+        var lst = await _grouping.GetAllGroups();
+        if (lst != null)
+        {
+            for(int i = 0; i < lst.Count(); i++)
+            {
+                dict.Add(lst.ElementAt(i));
+            }
+
+            return dict;
+        }
+        else{ return new List<TrainingGrouping>(); }
+    }
+
+    private async Task<List<TrainingCertification>> GetCertifications()
+    {
+        var data = new List<TrainingCertification>();
+        var result = await _trainCertificationService.GetTrainingCertificationsAsync();
+        if (result != null)
+        {
+            for(int i = 0; i < result.Count(); i++)
+            {
+                data.Add(result.ElementAt(i));
+            }
+
+            return data;
+        }
+        else{ return new List<TrainingCertification>(); } 
+    }
+
+    Task OnNumberChange(int value)
+    {
+        markToPass = value;
+        return Task.CompletedTask;
+    }
+
+    private async Task OnSaveTrainingRecord()
+    {
+        try
+        {
+            var usr = await storage.GetItemAsync<string>(key);
+
+            var ott = new TrainingType { Id = selectedID };
+            var otg = new TrainingGrouping{ Id = groupingID};
+            var otc = new TrainingCertification { Id = trainCertID };
+            var ots = new TrainingStatusType{ Id = 1}; //pending
+
+            model.TrainingType = selectedID;
+            model.TrainingGroupId = groupingID;
+            model.TrainingCertificationId = trainCertID;
+            model.DateFrom = dtFrom;
+            model.DateTo = dtTo;
+            model.MarkToPass = markToPass;
+            model.TrainingStatusId = ots.Id;
+            model.CreatedBy = usr;
+            model.CreatedDate = DateTime.Now;
+
+
+            var bln = await trainingService.SaveTrainingAsync(model, ott, otg, otc);
+            if (bln)
+            {
+                trainingList.Clear();
+                await ClearFormFields();
+                StateHasChanged();
+            }
+        }
+        catch(Exception x)
+        {
+
+        }
+    }
+
+    private Task ClearFormFields()
+    {
+        model = new Training { };
+
+        return Task.CompletedTask;
+    }
+    #endregion
+
+}
+

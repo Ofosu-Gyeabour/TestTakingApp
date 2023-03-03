@@ -1,0 +1,51 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "cdefe7a9-8456-403e-875e-a705dc76b62e": {
+      "ProjectGuid": "cdefe7a9-8456-403e-875e-a705dc76b62e",
+      "DisplayName": "PETAS",
+      "ColorIndex": 0
+    },
+    "ebf77201-1a1e-43c6-a539-d58424a0f657": {
+      "ProjectGuid": "ebf77201-1a1e-43c6-a539-d58424a0f657",
+      "DisplayName": "PANTrainerAPI",
+      "ColorIndex": 1
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
+    },
+    "dc1edd15-e538-403b-abb8-39475b07303b": {
+      "ProjectGuid": "dc1edd15-e538-403b-abb8-39475b07303b",
+      "DisplayName": "PETAS.Entity",
+      "ColorIndex": 2
+    },
+    "34dc84c1-bb34-4bf3-aa8d-a8802c359a8d": {
+      "ProjectGuid": "34dc84c1-bb34-4bf3-aa8d-a8802c359a8d",
+      "DisplayName": "PETAS.Data",
+      "ColorIndex": 3
+    },
+    "0dc6e064-89ec-46e2-983b-be8a1bbcc450": {
+      "ProjectGuid": "0dc6e064-89ec-46e2-983b-be8a1bbcc450",
+      "DisplayName": "PETAS.Models",
+      "ColorIndex": 4
+    },
+    "919fd655-f067-4ba2-b932-d926e85dd6b4": {
+      "ProjectGuid": "919fd655-f067-4ba2-b932-d926e85dd6b4",
+      "DisplayName": "Script Documents",
+      "ColorIndex": 5
+    },
+    "a18ff4bf-864c-4617-b5da-98807fb8d63b": {
+      "ProjectGuid": "a18ff4bf-864c-4617-b5da-98807fb8d63b",
+      "DisplayName": "SecureAccess",
+      "ColorIndex": 6
+    },
+    "5be570fe-938f-4ee7-8fd0-5949151c1ff2": {
+      "ProjectGuid": "5be570fe-938f-4ee7-8fd0-5949151c1ff2",
+      "DisplayName": "HRMS.API",
+      "ColorIndex": 7
+    }
+  },
+  "NextColorIndex": 8
+}

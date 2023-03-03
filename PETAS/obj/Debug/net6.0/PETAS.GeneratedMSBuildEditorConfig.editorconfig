@@ -1,0 +1,219 @@
+is_global = true
+build_property.TargetFramework = net6.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = false
+build_property.PlatformNeutralAssembly = 
+build_property._SupportedPlatformList = browser
+build_property.EnableSingleFileAnalyzer = 
+build_property.EnableTrimAnalyzer = true
+build_property.IncludeAllContentForSelfExtract = 
+build_property.RootNamespace = PETAS
+build_property.RootNamespace = PETAS
+build_property.ProjectDir = C:\Users\Blessings\Documents\Projects\PASL\Apps\PANTrainer\PETAS\
+build_property.RazorLangVersion = 6.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\Blessings\Documents\Projects\PASL\Apps\PANTrainer\PETAS
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/App.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Account/IDChallenge.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWNjb3VudFxJRENoYWxsZW5nZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Admin/Assessment.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cQXNzZXNzbWVudC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Admin/CreateGroup.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cQ3JlYXRlR3JvdXAucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Admin/Dashboard.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cRGFzaGJvYXJkLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Admin/Groupings1.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cR3JvdXBpbmdzMS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Admin/Questions.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cUXVlc3Rpb25zLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Admin/Training/AssignTraining.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVHJhaW5pbmdcQXNzaWduVHJhaW5pbmcucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Admin/Training/Configuration.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVHJhaW5pbmdcQ29uZmlndXJhdGlvbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Admin/Training/CreateTraining.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVHJhaW5pbmdcQ3JlYXRlVHJhaW5pbmcucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Admin/Training/DownloadTemplate.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVHJhaW5pbmdcRG93bmxvYWRUZW1wbGF0ZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Admin/Training/Groupings.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVHJhaW5pbmdcR3JvdXBpbmdzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Admin/Training/MCANSUpload.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVHJhaW5pbmdcTUNBTlNVcGxvYWQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Admin/Training/MultipleChoiceQuestionsList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVHJhaW5pbmdcTXVsdGlwbGVDaG9pY2VRdWVzdGlvbnNMaXN0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Admin/Training/QuestionList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVHJhaW5pbmdcUXVlc3Rpb25MaXN0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Admin/Training/QuestionLookup.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVHJhaW5pbmdcUXVlc3Rpb25Mb29rdXAucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Admin/Training/QuestionPool.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVHJhaW5pbmdcUXVlc3Rpb25Qb29sLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Admin/Training/ResourceLookup.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVHJhaW5pbmdcUmVzb3VyY2VMb29rdXAucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Admin/Training/TrainingDomain.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVHJhaW5pbmdcVHJhaW5pbmdEb21haW4ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Admin/Training/TrainingPartners.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVHJhaW5pbmdcVHJhaW5pbmdQYXJ0bmVycy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Admin/Training/TrainingResource.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVHJhaW5pbmdcVHJhaW5pbmdSZXNvdXJjZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Admin/Training/TrainingSubject.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVHJhaW5pbmdcVHJhaW5pbmdTdWJqZWN0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Admin/Training/WrittenQuestionList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVHJhaW5pbmdcV3JpdHRlblF1ZXN0aW9uTGlzdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Admin/Training/WRTANSUpload.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVHJhaW5pbmdcV1JUQU5TVXBsb2FkLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Awardee.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXdhcmRlZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Components/AudioUploadComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tcG9uZW50c1xBdWRpb1VwbG9hZENvbXBvbmVudC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Components/CreateTrainingComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tcG9uZW50c1xDcmVhdGVUcmFpbmluZ0NvbXBvbmVudC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Components/DashboardComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tcG9uZW50c1xEYXNoYm9hcmRDb21wb25lbnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Components/DashFooter.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tcG9uZW50c1xEYXNoRm9vdGVyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Components/DashHeader.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tcG9uZW50c1xEYXNoSGVhZGVyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Components/DashUserTrainings.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tcG9uZW50c1xEYXNoVXNlclRyYWluaW5ncy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Components/PDFUploadComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tcG9uZW50c1xQREZVcGxvYWRDb21wb25lbnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Components/ResourceLibrary.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tcG9uZW50c1xSZXNvdXJjZUxpYnJhcnkucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Components/SelectComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tcG9uZW50c1xTZWxlY3RDb21wb25lbnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Components/TrainingCertificationComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tcG9uZW50c1xUcmFpbmluZ0NlcnRpZmljYXRpb25Db21wb25lbnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Dashboard/Dashboard.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGFzaGJvYXJkXERhc2hib2FyZC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/FetchData.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRmV0Y2hEYXRhLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Student/Main.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3R1ZGVudFxNYWluLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Student/StudentCenter.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3R1ZGVudFxTdHVkZW50Q2VudGVyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/Student/StudentDashboard.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3R1ZGVudFxTdHVkZW50RGFzaGJvYXJkLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Pages/TitleComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGl0bGVDb21wb25lbnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Shared/AdminLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXEFkbWluTGF5b3V0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Shared/DashLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXERhc2hMYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Shared/LoginLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXExvZ2luTGF5b3V0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Shared/QuestionLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFF1ZXN0aW9uTGF5b3V0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Shared/SurveyPrompt.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFN1cnZleVByb21wdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Shared/AdmNav.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXEFkbU5hdi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-7sahts0u2o
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Shared/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-shk9h8q1wq
+
+[C:/Users/Blessings/Documents/Projects/PASL/Apps/PANTrainer/PETAS/Shared/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE5hdk1lbnUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-kdvmfy9b5m

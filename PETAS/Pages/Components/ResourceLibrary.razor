@@ -1,0 +1,211 @@
+﻿@inject ITrainingResourceService tResource
+@inject ITrainingService trainingService
+@inject ILocalStorageService localStorage
+
+@using PETAS.Models.Domain
+
+@if(resourceList.Count() == 0)
+{
+    <div class="spinner">Loading...</div>
+}
+else
+{
+    <Table Striped="true" Hoverable="true" Bordered="true">
+            
+        <TableHeader>
+            <TableHeaderCell>#</TableHeaderCell>
+            <TableHeaderCell>Resource Name</TableHeaderCell>
+            <TableHeaderCell>Resource Type</TableHeaderCell>
+            <TableHeaderCell>Created</TableHeaderCell>
+            <TableHeaderCell>Preview</TableHeaderCell>
+            <TableHeaderCell>Action</TableHeaderCell>
+        </TableHeader>
+
+        <TableBody>
+            @foreach(var resource in resourceList)
+            {
+                <TableRow>
+                    <TableRowCell>@resource.Id.ToString()</TableRowCell>
+                    <TableRowCell>@resource.ResourceName.Trim()</TableRowCell>
+                    <TableRowCell>@resource.TrainingResourceNavigation.TrainingResourceExt.Trim()</TableRowCell>
+                    <TableRowCell>@Convert.ToDateTime(@resource.CreatedDate).ToString("dd-MMM-yyyy")</TableRowCell>
+                    <TableRowCell><Button Color="Color.Primary" Clicked="@(()=>ShowPreview(@resource))">Preview</Button></TableRowCell>
+                    <TableRowCell><Button Color="Color.Primary" Clicked="@(()=>AssignToTraining(@resource))">Assign to Training</Button></TableRowCell>
+                </TableRow>
+            }
+        </TableBody>
+
+    </Table>
+
+    <Modal @ref="modalRef">
+        <ModalContent Centered Size="ModalSize.ExtraLarge">
+            <ModalHeader>
+                <ModalTitle>@PDFTitle</ModalTitle>
+                <CloseButton />
+            </ModalHeader>
+            <ModalBody>
+                <embed src="@DisplayPDF" width=1100 height=800 visible="false" />
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
+            </ModalFooter>
+        </ModalContent>
+    </Modal>
+
+    <Modal @ref="trainingRef">
+        <ModalContent Centered Size="ModalSize.Small">
+            <ModalHeader>
+                <ModalTitle>@PDFTitle</ModalTitle>
+                <CloseButton />
+            </ModalHeader>
+            <ModalBody>
+                <select @onchange="OnSelectionChange">
+                    <option value="">Select Training...</option>
+                    @if(trainingList.Count() > 0)
+                    {
+                        foreach(var t in trainingList)
+                        {
+                            <option value="@t.Id">@t.TrainingName</option>
+                        }
+                    }
+                </select>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="@SaveAssignment">Save Assignment</Button>
+                <Button Color="Color.Secondary" Clicked="@HideTrainingModalForm">Close</Button>
+            </ModalFooter>
+        </ModalContent>
+    </Modal>
+}
+@code{
+    private List<TrainingResource> resourceList = new List<TrainingResource>();
+    private List<Training> trainingList = new List<Training>();
+    private int selectedTrainingID;
+    private Training selectedTraining;
+
+    private TrainingResource selectedID;
+    private Modal modalRef;
+    private Modal trainingRef;
+
+    private string DisplayPDF { get; set; } = string.Empty;
+    private string PDFTitle { get; set; } = string.Empty;
+    private const string userKey = @"userKey";
+
+    private enum StatusOfTraining
+    {
+        Pending = 1,
+        Finished = 2,
+        Cancelled = 3
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        resourceList = await GetDataAsync();
+        base.OnInitializedAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        trainingList = await GetPendingTrainingsAsync();
+        base.OnAfterRenderAsync(firstRender);
+    }
+
+    private void OnSelectionChange(ChangeEventArgs e)
+    {
+        if (e.Value != string.Empty)
+        {
+            selectedTrainingID = int.Parse(e.Value.ToString());
+            selectedTraining = trainingList.FirstOrDefault(item => item.Id == selectedTrainingID);
+        }
+    }
+
+    private async Task<bool> SaveAssignment(){
+        if ((selectedTraining != null) && (selectedTrainingID > 0))
+        {
+            //check training resource to see if record exists
+            var obj = resourceList.Where(x => x.ResourceName == PDFTitle).FirstOrDefault();
+            if (obj.TrainingId != null)
+            {
+                //create a new record
+                //use the obj trainingResource and the selectedTraining 
+                var usr = await localStorage.GetItemAsync<string>(userKey);
+                var bln = await tResource.SaveTrainingResourceAsync(obj, selectedTraining,usr);
+                if (bln)
+                {
+                    await HideTrainingModalForm();
+                    StateHasChanged();
+                    return true;
+                }
+                else { return false; }
+            }
+            else
+            {
+                //record exist with a null training id. Update the record
+                obj.TrainingId = selectedTraining.Id;
+                var bln = await tResource.UpdateTrainingResourceAsync(obj);
+                if (bln)
+                {
+                    await HideTrainingModalForm();
+                    StateHasChanged();
+                    return true;
+                }
+                else{ return false; }
+            }
+        }
+        else{ return false; }
+    }
+
+    private async Task<List<TrainingResource>> GetDataAsync()
+    {
+        return await tResource.GetTrainingResourcesAsync();
+    }
+
+    private async Task ShowPreview(TrainingResource selected)
+    {
+        //display modal..show PDF form
+        PDFTitle = selected.ResourceName.Trim();
+        DisplayPDF = await GetPDF(selected.EmbeddedResource);
+        modalRef.Show();
+    }
+
+    private async Task AssignToTraining(TrainingResource selected)
+    {
+        //assigns resource to a training programme
+        PDFTitle = selected.ResourceName.Trim();
+        trainingRef.Show();
+    }
+
+    private Task HideModal()
+    {
+        return modalRef.Hide();
+    }
+
+    private Task HideTrainingModalForm()
+    {
+        return trainingRef.Hide();
+    }
+
+    private async Task<string> GetPDF(byte[] b)
+    {
+        var f = "data:application/pdf;base64," + Convert.ToBase64String(b);
+        //Response.AppendHeader("content-disposition", "inline; filename=file.pdf");
+        //var f = new FileStreamResult(new MemoryStream(b), "application/pdf");
+        return f;
+    }
+
+    private async Task<List<Training>> GetPendingTrainingsAsync()
+    {
+        var data = await trainingService.GetTrainingsAsync();
+        var result = new List<Training>();
+        foreach (var d in data)
+        {
+            if (d.TrainingStatusId == (int?)StatusOfTraining.Pending)
+            {
+                result.Add(d);
+            }
+        }
+
+        return result;
+    }
+
+}

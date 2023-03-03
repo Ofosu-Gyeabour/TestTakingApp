@@ -1,0 +1,15 @@
+C:\Users\aonana\Desktop\copy\PETAS.Data\bin\Release\net6.0\PETAS.Data.deps.json
+C:\Users\aonana\Desktop\copy\PETAS.Data\bin\Release\net6.0\PETAS.Data.dll
+C:\Users\aonana\Desktop\copy\PETAS.Data\bin\Release\net6.0\PETAS.Data.pdb
+C:\Users\aonana\Desktop\copy\PETAS.Data\bin\Release\net6.0\PETAS.Models.dll
+C:\Users\aonana\Desktop\copy\PETAS.Data\bin\Release\net6.0\PETAS.Models.pdb
+C:\Users\aonana\Desktop\copy\PETAS.Data\obj\Release\net6.0\PETAS.Data.csproj.AssemblyReference.cache
+C:\Users\aonana\Desktop\copy\PETAS.Data\obj\Release\net6.0\PETAS.Data.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\aonana\Desktop\copy\PETAS.Data\obj\Release\net6.0\PETAS.Data.AssemblyInfoInputs.cache
+C:\Users\aonana\Desktop\copy\PETAS.Data\obj\Release\net6.0\PETAS.Data.AssemblyInfo.cs
+C:\Users\aonana\Desktop\copy\PETAS.Data\obj\Release\net6.0\PETAS.Data.csproj.CoreCompileInputs.cache
+C:\Users\aonana\Desktop\copy\PETAS.Data\obj\Release\net6.0\PETAS.Data.csproj.CopyComplete
+C:\Users\aonana\Desktop\copy\PETAS.Data\obj\Release\net6.0\PETAS.Data.dll
+C:\Users\aonana\Desktop\copy\PETAS.Data\obj\Release\net6.0\refint\PETAS.Data.dll
+C:\Users\aonana\Desktop\copy\PETAS.Data\obj\Release\net6.0\PETAS.Data.pdb
+C:\Users\aonana\Desktop\copy\PETAS.Data\obj\Release\net6.0\ref\PETAS.Data.dll

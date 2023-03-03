@@ -1,0 +1,131 @@
+﻿@inject IAssessmentSubjectService subjectService
+@inject IFileUploadService fuploadService
+@inject IConfiguration config
+@inject INotificationService notifier
+@inject Blazored.LocalStorage.ILocalStorageService _store
+
+@inject IJSRuntime jsRuntime
+
+@using System.IO
+@using PETAS.Models.Domain.Others
+
+@if (!loaded)
+{
+    <div class="spinner">Loading...</div>
+}
+
+@if(assessmentSubjectList == null)
+{
+    <div class="spinner">Loading...</div>
+}
+else 
+{
+    <TitleComponent Title="Multiple-choice questions upload" />
+    <Alert Color="Color.Primary" Visible="true">
+        <Field>
+            <FieldLabel>Question upload type</FieldLabel>
+            <TextEdit Disabled="true" Text="Multiple-Choice" Color="Color.Success" />
+        </Field>
+
+        <Field>
+            <Select TValue="int" @bind-SelectedValue="@selectedValue">
+                @foreach(var d in assessmentSubjectList)
+                {
+                    <SelectItem Value="d.Id">@d.SubjectName</SelectItem>
+                }
+            </Select>
+        </Field> 
+
+        <Field>
+            <FileEdit Filter=".xlsx" Changed="@OnChanged" />
+        </Field>
+        <br />
+        <div id="animator"></div>
+        <Button Color="Color.Primary" Clicked="OnValidSubmit">Upload Questions</Button>
+    </Alert>
+    
+}
+
+
+@code{
+    private AssessmentSubject objAssessmentSubject = new AssessmentSubject();
+    private IEnumerable<AssessmentSubject> assessmentSubjectList;
+    private Validations validations = new Validations();
+
+    private UploadedFile uploadedFile = new UploadedFile();
+
+    private string message = string.Empty;
+    private IFileEntry selectedFile;
+    private bool loaded = true;
+    int selectedValue;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetSubjectData();
+        await base.OnInitializedAsync();
+    }
+
+    private async Task GetSubjectData()
+    {
+        assessmentSubjectList = await subjectService.GetAllAssessmentSubjects();
+    }
+
+    private async Task OnValidSubmit()
+    {
+        //triggered upon validation and submission
+        if ((selectedValue > 0) && (message != string.Empty))
+        {
+            try
+            {
+                loaded = false;
+
+                Stream stream = selectedFile.OpenReadStream();
+                MemoryStream ms = new MemoryStream();
+                await stream.CopyToAsync(ms);
+                //stream.Close();
+
+                uploadedFile = new UploadedFile();
+                uploadedFile.FileName = message;
+                uploadedFile.FilePath = config.GetValue<string>("UploadTo");
+                uploadedFile.QuestionType = @"Multiple Choice (MCANS)";
+                uploadedFile.FileContent = ms.ToArray();
+
+                uploadedFile.inputter = await _store.GetItemAsync<string>(@"userKey");
+                //call API to read contents and insert into database
+                message = await fuploadService.UploadMCASFileContentDbAsync(uploadedFile);
+
+                loaded = true;
+                message = $"Contents of {uploadedFile.FileName} uploaded to server successfully";
+
+                //call API to upload file unto server
+                bool bln = await fuploadService.UploadFileAsync(uploadedFile);
+
+                loaded = true;
+                message = $"{uploadedFile.FileName} uploaded to server successfully";
+                await notifier.Success(message, @"Upload Success");
+            
+                StateHasChanged();
+
+                stream.Close();
+                ms.Close();
+            }
+            catch(Exception ex)
+            {
+                
+            }
+        }
+    }
+
+    
+
+    private async Task OnChanged(FileChangedEventArgs e)
+    {
+        if (message == string.Empty)
+        {
+            selectedFile = e.Files[0];
+            message = selectedFile.Name;
+            StateHasChanged();
+        }
+    }
+
+}

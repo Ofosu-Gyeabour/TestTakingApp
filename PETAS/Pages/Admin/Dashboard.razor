@@ -1,0 +1,67 @@
+﻿@page "/admin/"
+@layout MainLayout
+
+<section>
+    <div class="flex-container">
+        <div class="hover-overlay ripple shadow strong rounded float-child flex-child" onclick="@showModal">
+            <Badge  Color="Color.Primary">
+                <Figure Size="FigureSize.Is256x256">
+                    <FigureImage Source="../images/group_2.jpg" AlternateText="empty-256x256" />
+                    <FigureCaption>Training Group?</FigureCaption>
+                </Figure>
+            </Badge>
+        </div>
+
+        <div class="hover-overlay ripple shadow strong rounded float-child flex-child">
+            
+        </div>
+
+        <div class="hover-overlay ripple shadow strong rounded float-child flex-child">
+            
+        </div>
+
+        <div class="hover-overlay ripple shadow strong rounded float-child flex-child">
+            
+        </div>
+    </div>
+    <Modal @ref="modalRef">
+    <ModalContent Centered="true">
+        <ModalHeader>
+            <ModalTitle>Group Creation</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            <Field>
+                <FieldLabel>Name</FieldLabel>
+                <TextEdit Placeholder="Enter name of group" />
+            </Field>
+            <Field>
+                <FieldLabel>Domain</FieldLabel>
+                <MemoEdit Rows="3"/>
+             </Field>       
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
+            <Button Color="Color.Primary" Clicked="@HideModal">Save</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+</section>
+
+@code{
+    private Modal modalRef;
+
+    private Task showModal()
+    {
+        modalRef.Shadow = Shadow.Small;
+        modalRef.Show();
+        return Task.CompletedTask;
+    }
+
+    private Task HideModal()
+    {
+        modalRef.Hide();
+        return Task.CompletedTask;
+    }
+
+}

@@ -1,0 +1,170 @@
+﻿@page "/student/studentdashboard"
+@layout QuestionLayout
+
+@inject IQAllotedService qservice
+@inject IObjectiveService oservice
+
+@if((questions == null) ||(objectives == null))
+{
+    <div class="spinner">Loading...</div>
+}
+else
+{
+    <style>
+        .radio-styling
+        {
+            margin: 10px;
+            padding: 2px;
+            border: 1px;
+            height: auto;
+        }
+    </style>
+
+    <div class="col-md-8">
+        <div class="card-body">
+            @if(count > 0)
+            {
+                <h3 class="card-title">Question No: @count</h3>
+                <p class="card-text">
+                    @if (blnInitiated)
+                    {
+                        @currentQuestion.Question
+                    }
+                </p>
+
+                <div>
+                    <p class="card-text">
+                    <small>
+                        <input type="radio" class="radio-styling" name="@currentQuestion.Question" />
+                        <label for="">@currentObjectives.Cobj1</label>
+                        <br />
+                    </small>
+                    </p>
+                    <p class="card-text">
+                        <small>
+                            <input type="radio" class="radio-styling" name="@currentQuestion.Question" />
+                            <label for="">@currentObjectives.Cobj2</label>
+                            <br />
+                        </small>
+                    </p>
+                    <p class="card-text">
+                        <small>
+                            <input type="radio" class="radio-styling" name="@currentQuestion.Question" />
+                            <label for="">@currentObjectives.Cobj3</label>
+                            <br />
+                        </small>
+                    </p>
+                    <p class="card-text">
+                        <small>
+                            <input type="radio" class="radio-styling" name="@currentQuestion.Question" />
+                            <label for="">@currentObjectives.Cobj4</label>
+                            <br />
+                        </small>
+                    </p>
+                </div>
+                
+            }
+       </div>
+    </div>
+    <style>
+        .mybtn-right{
+            text-align:right;
+        }
+        .mybtn-left{
+            text-align: left;
+        }
+    </style>
+    <div class="row">
+        <div class="col-md-6 mybtn-left">
+            <button type="button" class="btn btn-primary" onclick="@startTest">Start Test</button>
+        </div>
+        <div class="col-md-6 mybtn-right">
+            <button type="button" class="btn btn-primary" onclick="@nextQuestion">Next Question</button>
+        </div>
+    </div>
+
+}
+
+@code{
+    private List<AssessmentQuestionPool> questions;
+    private List<ObjectiveClass> objectives;
+
+    private AssessmentQuestionPool currentQuestion;
+    private ObjectiveClass currentObjectives;
+
+    private bool blnInitiated = false;
+    private int questionIndex = 0;
+    private int count;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        questions = await GetQuestions();
+        objectives = await GetObjectivesToQuestions(questions);
+
+        StateHasChanged();
+    }
+
+    private async Task<List<AssessmentQuestionPool>> GetQuestions()
+    {
+        var qalloted =  await qservice.GetSelectedQuestions(3, 1);
+        return await qservice.getRandomQuestions(qalloted);
+    }
+
+    private async Task<List<ObjectiveClass>> GetObjectivesToQuestions(List<AssessmentQuestionPool> q)
+    {
+        //method gets the objectives to the questions being asked
+        List<ObjectiveClass> results = new List<ObjectiveClass>();
+
+        if (q.Count() > 0)
+        {
+            foreach(var item in q)
+            {
+                var obj = await oservice.GetObjectiveClassAsync(item.Id);
+                if (obj != null)
+                {
+                    results.Add(obj);
+                }
+            }
+        }
+
+        return results;
+    }
+
+    void startTest(EventArgs e)
+    {
+        if (!blnInitiated)
+        {
+            blnInitiated = true;
+            
+            currentQuestion = questions[questionIndex];
+            currentObjectives = objectives[questionIndex];
+
+            count = questionIndex + 1;
+            StateHasChanged();
+        }
+    }
+
+    void nextQuestion(EventArgs e)
+    {
+        int k = questions.Count();
+        if (!blnInitiated)
+        {
+            questionIndex = 0;
+        }
+        else
+        {
+            questionIndex += 1;
+        }
+
+        if (questionIndex < (questions.Count()))
+        {
+            currentQuestion = questions[questionIndex];
+            currentObjectives = objectives[questionIndex];
+
+            count = questionIndex + 1;
+            StateHasChanged();
+        }  
+    }
+
+}

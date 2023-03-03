@@ -1,0 +1,19 @@
+﻿@inherits LayoutComponentBase
+
+<link href="css/idchallenge.css" rel="stylesheet" />
+
+<div class="page">
+    <div class="sidebar">
+        <ErrorBoundary>
+            <AdmNav />
+        </ErrorBoundary>
+    </div>
+
+    <main>
+        <article class="content px-4">
+            <ErrorBoundary>
+                 @Body
+            </ErrorBoundary>
+        </article>
+    </main>
+</div>

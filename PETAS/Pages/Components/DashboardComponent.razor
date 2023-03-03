@@ -1,0 +1,154 @@
+﻿@inject ITrainingService tService
+
+@if(trainings.Count() == 0)
+{
+    <div class="spinner"><em>Loading...</em></div>
+}
+else
+{
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <Card Background="Background.Success">
+                <Tooltip Text="Total number of trainings">
+                <CardBody>
+                    <CardText>
+                        <div class="d-flex align-items-center justify-content-center"><p><em><h6>Total Trainings <Strong>@trainings.Count().ToString()</Strong></h6></em></p></div>
+                    </CardText>
+                </CardBody>
+                </Tooltip>
+            </Card>
+        </div>
+        <div class="col-md-3">
+            <Card Background="Background.Danger">
+                <Tooltip Text="Pending trainings">
+                <CardBody>
+                    <CardText>
+                        <div class="d-flex align-items-center justify-content-center"><p><em><h6>Pending Trainings <Strong>@pendingTrainings</Strong></h6></em></p></div>
+                    </CardText>
+                </CardBody>
+                </Tooltip>
+            </Card>
+        </div>
+        <div class="col-md-3">
+            <Card Background="Background.Secondary">
+                <Tooltip Text="On-going trainings">
+                <CardBody>
+                    <CardText>
+                        <div class="d-flex align-items-center justify-content-center"><p><em><h6>Finished Trainings <Strong>@finishedTrainings</Strong></h6></em></p></div>
+                    </CardText>
+                </CardBody>
+                </Tooltip>
+            </Card>
+        </div>
+        <div class="col-md-3">
+            <Card Background="Background.Info">
+                <Tooltip Text="Pass rate">
+                <CardBody>
+                    <CardText>
+                        <div class="d-flex align-items-center justify-content-center"><p><em><h6>Average Pass Rate <Strong>4</Strong></h6></em></p></div>
+                    </CardText>
+                </CardBody>
+                </Tooltip>
+            </Card>
+        </div>
+    </div>
+
+   @* <div class="row">
+        <div class="col-md-3">
+            <Card Background="Background.Transparent">
+                <Tooltip Text="Fail rate">
+                <CardBody>
+                    <CardText>
+                        <div class="d-flex align-items-center justify-content-center"><p><em><h6>Average Fail Rate <Strong>4</Strong></h6></em></p></div>
+                    </CardText>
+                </CardBody>
+                </Tooltip>
+            </Card>
+        </div> 
+    </div>*@
+
+</div>
+<Divider Background="Background.Success" />
+
+<div class="container">
+    <Table Striped="true" Bordered="true" Hoverable="true" Width="Width.Auto">
+        <TableHeader>
+            <TableRow>
+                <TableHeaderCell>Training Name</TableHeaderCell>
+                <TableHeaderCell>From</TableHeaderCell>
+                <TableHeaderCell>To</TableHeaderCell>
+                <TableHeaderCell>Status</TableHeaderCell>
+                <TableHeaderCell>Grouping</TableHeaderCell>
+                <TableHeaderCell>Pass Mark</TableHeaderCell>
+                <TableHeaderCell>Type</TableHeaderCell>
+            </TableRow>
+        </TableHeader>
+
+        <TableBody>
+            @foreach(var item in trainings)
+            {
+                <TableRow>
+                    <TableRowCell>@item.TrainingName</TableRowCell>
+                    <TableRowCell>@Convert.ToDateTime(item.DateFrom).ToString("dd-MM-yyyy")</TableRowCell>
+                    <TableRowCell>@Convert.ToDateTime(item.DateTo).ToString("dd-MM-yyyy")</TableRowCell>
+                    <TableRowCell>@item.TrainingStatus.TrainingTypeStatus</TableRowCell>
+                    <TableRowCell>@item.TrainingGroup.GroupName</TableRowCell>
+                    <TableRowCell>@item.MarkToPass.ToString()</TableRowCell>
+                    <TableRowCell>@item.TrainingTypeNavigation.Status</TableRowCell>
+                </TableRow>
+            }
+        </TableBody>
+    </Table>
+</div>
+    
+}
+
+@code{
+    private List<Training> trainings = new List<Training>();
+    private int totalTrainings;
+    private int pendingTrainings;
+    private int cancelledTrainings;
+    private int finishedTrainings;
+
+    private enum StatusOfTraining
+    {
+        Pending = 1,
+        Finished = 2,
+        Cancelled = 3
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        trainings = await GetTrainingDataAsync();
+        await base.OnInitializedAsync();
+    }
+
+    private async Task<List<Training>> GetTrainingDataAsync()
+    {
+        var data = await tService.GetTrainingsAsync();
+
+        foreach(var d in data)
+        {
+            if (d.TrainingStatusId == (int?)StatusOfTraining.Pending)
+            {
+                pendingTrainings += 1;
+            }
+
+            if (d.TrainingStatusId == (int?)StatusOfTraining.Finished)
+            {
+                finishedTrainings += 1;
+            }
+
+            if (d.TrainingStatusId == (int?)StatusOfTraining.Cancelled)
+            {
+                cancelledTrainings += 1;
+            }
+        }
+
+        data.Reverse();
+        return data;
+    }
+
+}

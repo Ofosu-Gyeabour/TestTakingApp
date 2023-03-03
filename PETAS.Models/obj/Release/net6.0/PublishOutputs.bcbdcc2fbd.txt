@@ -1,0 +1,13 @@
+G:\Dev_Repository\Projects\Copy\repro\PANTrainer\Publish\PETAS.Models.dll
+G:\Dev_Repository\Projects\Copy\repro\PANTrainer\Publish\PETAS.Models.deps.json
+G:\Dev_Repository\Projects\Copy\repro\PANTrainer\Publish\PETAS.Models.pdb
+G:\Dev_Repository\Projects\Copy\repro\PANTrainer\Publish\Microsoft.EntityFrameworkCore.dll
+G:\Dev_Repository\Projects\Copy\repro\PANTrainer\Publish\Microsoft.EntityFrameworkCore.Abstractions.dll
+G:\Dev_Repository\Projects\Copy\repro\PANTrainer\Publish\Microsoft.Extensions.Caching.Abstractions.dll
+G:\Dev_Repository\Projects\Copy\repro\PANTrainer\Publish\Microsoft.Extensions.Caching.Memory.dll
+G:\Dev_Repository\Projects\Copy\repro\PANTrainer\Publish\Microsoft.Extensions.DependencyInjection.dll
+G:\Dev_Repository\Projects\Copy\repro\PANTrainer\Publish\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+G:\Dev_Repository\Projects\Copy\repro\PANTrainer\Publish\Microsoft.Extensions.Logging.dll
+G:\Dev_Repository\Projects\Copy\repro\PANTrainer\Publish\Microsoft.Extensions.Logging.Abstractions.dll
+G:\Dev_Repository\Projects\Copy\repro\PANTrainer\Publish\Microsoft.Extensions.Options.dll
+G:\Dev_Repository\Projects\Copy\repro\PANTrainer\Publish\Microsoft.Extensions.Primitives.dll

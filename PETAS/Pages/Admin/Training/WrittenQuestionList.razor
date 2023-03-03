@@ -1,0 +1,164 @@
+﻿@inject IAssessmentSubjectService subjectService
+@inject IAssessmentQuestionPoolService qpoolService
+@inject IQuestionTypeService qtypeService
+
+@using PETAS.Models.Domain
+
+@if(subjectList == null)
+{
+    <div class="spinner">Loading...</div>
+}
+else
+{  
+    <Row>
+        <Column ColumnSize=ColumnSize.Is12>
+            <Autocomplete TItem = "AssessmentSubject"
+                TValue="int"
+                Data = "@subjectList"
+                
+                @bind-SelectedText="selectedAutoCompleteText"
+                TextField="@(( item ) => item.SubjectName)"
+                ValueField="@(( item ) => item.Id)"
+                Placeholder="Type to search for subject..."
+                Filter="AutocompleteFilter.StartsWith"
+                FreeTyping
+                SelectedValueChanged = "@changedValueWRTANS"
+                CustomFilter="@(( item, searchValue ) => item.SubjectName.IndexOf( searchValue, 0, StringComparison.CurrentCultureIgnoreCase ) >= 0 )">
+            </Autocomplete>
+        </Column>
+    </Row>
+
+    @if(questionPoolList != null)
+    {
+        <Row>
+            <Column ColumnSize=ColumnSize.Is9>
+                <Alert Color="Color.Light" Visible="true">
+                    <DataGrid TItem="AssessmentQuestionPool" 
+                        Data="@questionPoolList"
+                        @bind-SelectedRow="@question" 
+                        Responsive 
+                        Hoverable = "true"
+                        Striped = "true"
+                        Narrow = "true"
+                        Bordered="true"
+                
+                        SelectedRowStyling="@OnSelectedRowStyling"
+                        Virtualize 
+                        VirtualizeOptions="@(new() { DataGridHeight = "250px"})">
+                            <DataGridCommandColumn TItem="AssessmentQuestionPool" />
+                            <DataGridColumn TItem="AssessmentQuestionPool" Field="@nameof(AssessmentQuestionPool.Question)" Caption="Question" Sortable="false" />
+                    </DataGrid>
+                </Alert>
+            </Column>
+
+            <Column ColumnSize=ColumnSize.Is3>
+                    @if(question != null)
+                    {
+                        <Card Background="Background.Success">
+                            <CardTitle>Question Details</CardTitle>
+                            <Table Striped="true" Hoverable="true">
+                                <TableRow>
+                                    <TableRowCell>Created Date</TableRowCell>
+                                    <TableRowCell>@Convert.ToDateTime(@question.CreatedDate).ToString("dd-MMM-yyyy")</TableRowCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableRowCell>Created By</TableRowCell>
+                                    <TableRowCell>@question.CreatedBy</TableRowCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableRowCell>Question No</TableRowCell>
+                                    <TableRowCell>@question.Id.ToString()</TableRowCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableRowCell>
+                                        <Button Color="Color.Primary" Clicked="@OnApproveQuestion">Approve</Button>
+                                    </TableRowCell>
+                                    <TableRowCell>
+                                        <Button Color="Color.Secondary" Clicked="@OnApproveAllQuestions">Approve All</Button>
+                                    </TableRowCell>
+                                </TableRow>
+                            </Table>
+                        </Card>
+                        
+                    }
+            </Column>
+        </Row>
+    }
+    
+}
+@code{
+    //component loads the list of written questions loaded about a particular subject
+    //and provides brief statistics concerning it
+
+    private IEnumerable<AssessmentSubject> subjectList{ get; set; }
+    private List<AssessmentQuestionPool> questionPoolList { get; set; }
+    private AssessmentQuestionPool question{ get; set; }
+    private int SelectedValue{ get; set; }
+    private string? selectedAutoCompleteText { get; set; }
+    private string selectedLGroupItem { get; set; }
+
+    private const int WRT_ANS_ID = 2;  //Lookup Id in the question type table
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            subjectList = await getSubjectListAsync();
+            await base.OnInitializedAsync();
+        }
+        catch(Exception x)
+        {
+
+        }
+    }
+
+    private async Task<IEnumerable<AssessmentSubject>> getSubjectListAsync()
+    {
+        return await subjectService.GetAllAssessmentSubjects();
+    }
+
+    private async Task changedValueWRTANS(int selected)
+    {
+        //use the changed object to populate the grid again
+        //questionPoolList
+        SelectedValue = selected;
+        if (SelectedValue > 0)
+        {
+            //get question type
+            var qtObj = await qtypeService.GetQuestionType(WRT_ANS_ID);
+            var results = await qpoolService.GetWRTAnsAssessmentQuestionPoolAsync(SelectedValue);
+
+            List<AssessmentQuestionPool> dta = new List<AssessmentQuestionPool>();
+
+            if(results != null)
+            {
+                foreach(var item in results)
+                {
+                    if (item.QuestionType == qtObj.Id)
+                    {
+                        dta.Add(item);
+                    }
+                }
+
+                questionPoolList = dta;
+            }
+        }
+    }
+
+    private void OnSelectedRowStyling(AssessmentQuestionPool question, DataGridRowStyling styling)
+    {
+        styling.Background = Background.Success;
+    }
+
+    private Task OnApproveQuestion()
+    {
+        //method is fired to approve a question
+        return Task.CompletedTask;
+    }
+
+    private Task OnApproveAllQuestions(){
+        //method is fired to approve all questions fetched from the data store
+        return Task.CompletedTask;
+    }
+
+}
